@@ -1,2 +1,2 @@
-cmd/collecttweets/collecttweets
+cmd/tweetscollect/tweetscollect
 cmd/sentimentalyze/sentimentalyze
