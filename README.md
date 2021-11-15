@@ -6,19 +6,22 @@ _Sentiment analysis_ can capture the market or customer sentiment towards a bran
 
 This project is to perform _sentiment analysis_ on the Twitter tweets related to a given brand over a period of time, and create a sentiment trend graph which visualizes the sentiment towards the brand.
 
-There are several tools developed for this project: _tweetscollect_, _sentimentalyze_, etc.
+There are several tools developed for this project:
+1. _tweetscollect_ for collecting the tweets for a topic from _Twitter_ into a dataset.
+2. _sentimentalyze_ for performing _sentiment analysis_ on the dataset.
+3. TBD for creating a sentiment trend graph based on the analyzed data in the dataset.
 
 ## tweetscollect
 
-_tweetscollect_ is a tool for collecting the tweets for a topic from _Twitter_ into a dataset.
+_tweetscollect_ is a tool for collecting the tweets for a topic from _Twitter_ into a dataset. To use _tweetscollect_, you must have a [Twitter Developer Account](https://developer.twitter.com/en/apply-for-access) and a _Bearer Token_ for authentication. 
 
-To build _tweetscollect_,
 ```
+# Build tweetscollect into an executable.
+#
 $ go build ./cmd/tweetscollect/...
-```
 
-To run _tweetscollect_,
-```
+# Run tweetscollect to collect tweets for a topic.
+#
 $ ./tweetscollect -b <bearer-token> -t <topic>
 ```
 
@@ -26,13 +29,13 @@ $ ./tweetscollect -b <bearer-token> -t <topic>
 
 _sentimentalyze_ is a tool for performing _sentiment analysis_ over the dataset using _Amazon Comprehend_.
 
-To build _sentimentalyze_,
 ```
+# Build sentimentalyze into an executable.
+#
 $ go build ./cmd/sentimentalyze/...
-```
 
-To run _sentimentalyze_,
-```
+# Run _sentimentalyze_ to perform sentiment analysis.
+#
 $ ./sentimentalyze -a <access-key-id> -s <secret-access-key>
 ```
 
