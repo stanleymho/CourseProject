@@ -18,19 +18,26 @@ func collectTweets(bearerToken, topic string) error {
 	// Constuct URL.
 	var sb strings.Builder
 	sb.WriteString("?lang=en")
-	sb.WriteString("&result_type=popular")
+	sb.WriteString("&result_type=mixed")
 	sb.WriteString("&tweet_mode=extended")
 	sb.WriteString("&include_entities=false")
-	sb.WriteString("&q=" + url.QueryEscape(topic))
 	sb.WriteString("&count=100")
+	sb.WriteString("&q=" + url.QueryEscape(topic))
 	searchURLPath := sb.String()
 
-	tweets := make([]Tweet, 0, 100)
+	tweets := make([]TweetV1, 0, 100)
 	for {
 		url := fmt.Sprintf("%s%s", twitterSearchURL, searchURLPath)
 		t, nextSearchURLPath, err := collectTweetsByURL(ctx, bearerToken, url)
 		if err != nil {
 			return err
+		}
+
+		for _, tweet := range t {
+			createdAt, _ := parseDate(tweet.CreatedAt)
+			text := tweet.NormalizedText()
+			fmt.Printf("{ date=\"%v\", text=\"%s\", lang=\"%s\", favorite=%d, retweet=%d }\n",
+				createdAt, text, tweet.Lang, tweet.FavoriteCount, tweet.RetweetCount)
 		}
 
 		tweets = append(tweets, t...)
@@ -47,7 +54,7 @@ func collectTweets(bearerToken, topic string) error {
 }
 
 // collectTweetsByURL collects the tweets based on URL path.
-func collectTweetsByURL(ctx context.Context, bearerToken, url string) ([]Tweet, string, error) {
+func collectTweetsByURL(ctx context.Context, bearerToken, url string) ([]TweetV1, string, error) {
 	// Create HTTP request.
 	req, err := http.NewRequestWithContext(ctx, "GET", url, http.NoBody)
 	if err != nil {
@@ -71,16 +78,10 @@ func collectTweetsByURL(ctx context.Context, bearerToken, url string) ([]Tweet, 
 	}
 
 	// Decode response body as JSON.
-	val := &TwitterSearchResponse{}
+	val := &TwitterSearchResponseV1{}
 	decoder := json.NewDecoder(resp.Body)
 	if err := decoder.Decode(val); err != nil {
 		return nil, "", err
-	}
-
-	for _, tweet := range val.Tweets {
-		fmt.Printf("*** %s\n", tweet.NormalizedText())
-		t, _ := parseDate(tweet.CreatedAt)
-		fmt.Printf("---> date=%v, favorite=%d, retweet=%d\n", t, tweet.FavoriteCount, tweet.RetweetCount)
 	}
 
 	return val.Tweets, val.SearchMetadata.NextURLPath, nil

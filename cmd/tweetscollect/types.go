@@ -12,24 +12,24 @@ const (
 	twitterSearchURL = "https://api.twitter.com/1.1/search/tweets.json"
 )
 
-// TwitterSearchResponse represents the Twitter search response.
-type TwitterSearchResponse struct {
-	Tweets         []Tweet        `json:"statuses"`
-	SearchMetadata SearchMetadata `json:"search_metadata"`
+// TwitterSearchResponse represents the Twitter's search response.
+type TwitterSearchResponseV1 struct {
+	Tweets         []TweetV1        `json:"statuses"`
+	SearchMetadata SearchMetadataV1 `json:"search_metadata"`
 }
 
 // Tweet represents a tweet.
-type Tweet struct {
-	ID            string `json:"id_str"`
-	Text          string `json:"full_text"`
-	Lang          string `json:"lang"`
-	RetweetCount  int    `json:"retweet_count"`
-	FavoriteCount int    `json:"favorite_count"`
-	User          *User  `json:"user"`
-	CreatedAt     string `json:"created_at"`
+type TweetV1 struct {
+	ID            string  `json:"id_str"`
+	Text          string  `json:"full_text"`
+	Lang          string  `json:"lang"`
+	RetweetCount  int     `json:"retweet_count"`
+	FavoriteCount int     `json:"favorite_count"`
+	User          *UserV1 `json:"user"`
+	CreatedAt     string  `json:"created_at"`
 }
 
-func (t *Tweet) NormalizedText() string {
+func (t *TweetV1) NormalizedText() string {
 	s := t.Text
 	s = strings.ReplaceAll(s, "\n", "\\n")
 	s = strings.ReplaceAll(s, "\r", "\\r")
@@ -37,8 +37,8 @@ func (t *Tweet) NormalizedText() string {
 	return s
 }
 
-// User represents a Twitter user.
-type User struct {
+// UserV1 represents a Twitter user.
+type UserV1 struct {
 	ID             string `json:"id_str"`
 	Name           string `json:"name"`
 	ScreenName     string `json:"screen_name"`
@@ -48,7 +48,7 @@ type User struct {
 	CreatedAt      string `json:"created_at"`
 }
 
-// SearchMetadata represents the metadata of the search.
-type SearchMetadata struct {
+// SearchMetadataV1 represents the metadata of the search.
+type SearchMetadataV1 struct {
 	NextURLPath string `json:"next_results"`
 }
