@@ -21,17 +21,16 @@ type TwitterSearchResponse struct {
 // Tweet represents a tweet.
 type Tweet struct {
 	ID            string `json:"id_str"`
-	FullText      string `json:"full_text"`
-	Truncated     bool   `json:"truncated"`
+	Text          string `json:"full_text"`
+	Lang          string `json:"lang"`
 	RetweetCount  int    `json:"retweet_count"`
 	FavoriteCount int    `json:"favorite_count"`
-	Lang          string `json:"lang"`
-	User          User   `json:"user"`
+	User          *User  `json:"user"`
 	CreatedAt     string `json:"created_at"`
 }
 
-func (t *Tweet) NormalizedFullText() string {
-	s := t.FullText
+func (t *Tweet) NormalizedText() string {
+	s := t.Text
 	s = strings.ReplaceAll(s, "\n", "\\n")
 	s = strings.ReplaceAll(s, "\r", "\\r")
 	s = strings.ReplaceAll(s, "\t", "\\t")

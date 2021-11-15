@@ -78,7 +78,7 @@ func getTweetsByURL(ctx context.Context, bearerToken, url string) ([]Tweet, stri
 	}
 
 	for _, tweet := range val.Tweets {
-		fmt.Printf("*** %s\n", tweet.NormalizedFullText())
+		fmt.Printf("*** %s\n", tweet.NormalizedText())
 		t, _ := parseDate(tweet.CreatedAt)
 		fmt.Printf("---> date=%v, favorite=%d, retweet=%d\n", t, tweet.FavoriteCount, tweet.RetweetCount)
 	}
