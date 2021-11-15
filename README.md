@@ -16,9 +16,9 @@ There are several tools developed for this project:
 ### Prerequisites
 
 To build and run the tools, there are several prerequisites:
-1. Install [Go 1.17](https://golang.org/doc/install).
-2. If you don't have a _Twitter developer account_,  [apply one](https://developer.twitter.com/en/apply-for-access). Once you have the account, create a _Bearer Token_ for authentication.
-3. If you don't have an _AWS account_, [apply one](https://aws.amazon.com). Once you have the account, [create an access key](https://docs.aws.amazon.com/general/latest/gr/aws-sec-cred-types.html#access-keys-and-secret-access-keys) for programmatic access. The _access key_ consists of _access key ID_ and _secret access key_.
+1. You will need to install [Go 1.17](https://golang.org/doc/install).
+2. If you don't have a _Twitter developer account_,  [apply one](https://developer.twitter.com/en/apply-for-access). Once you have the account, you will need to create a _Bearer Token_ for authentication. Please see [How to generate from the developer portal](https://developer.twitter.com/en/docs/authentication/oauth-2-0/bearer-tokens).
+3. If you don't have an _AWS account_, [apply one](https://aws.amazon.com). Once you have the account, you will need to [create an access key](https://docs.aws.amazon.com/general/latest/gr/aws-sec-cred-types.html#access-keys-and-secret-access-keys) for programmatic access. The _access key_ consists of an _access key ID_ and a _secret access key_.
 
 ### tweetscollect
 
