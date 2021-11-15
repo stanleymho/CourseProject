@@ -39,9 +39,9 @@ func NewCommand() *cobra.Command {
 	viper.SetEnvPrefix("twitter")
 
 	cmd := &cobra.Command{
-		Use:   "twitter -b <bearer-token> -t <topic>",
-		Short: "twitter is a tool for retrieving tweets.",
-		Long:  `twitter is a tool for retrieving tweets from Twitter.`,
+		Use:   "collecttweets -b <bearer-token> -t <topic>",
+		Short: "collecttweets is a tool for collecting tweets for a topic.",
+		Long:  `collecttweets is a tool for collecting tweets for a topic from Twitter.`,
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
 			if err := flag.CommandLine.Parse([]string{}); err != nil {
 				return err
@@ -57,7 +57,7 @@ func NewCommand() *cobra.Command {
 				return cmd.Usage()
 			}
 
-			return getTweets(bearerToken, topic)
+			return collectTweets(bearerToken, topic)
 		},
 	}
 

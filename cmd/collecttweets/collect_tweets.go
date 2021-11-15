@@ -11,8 +11,8 @@ import (
 	"github.com/hashicorp/go-retryablehttp"
 )
 
-// getTweets gets the tweets for a topic.
-func getTweets(bearerToken, topic string) error {
+// collectTweets collects the tweets for a topic.
+func collectTweets(bearerToken, topic string) error {
 	ctx := context.Background()
 
 	// Constuct URL.
@@ -28,7 +28,7 @@ func getTweets(bearerToken, topic string) error {
 	tweets := make([]Tweet, 0, 100)
 	for {
 		url := fmt.Sprintf("%s%s", twitterSearchURL, searchURLPath)
-		t, nextSearchURLPath, err := getTweetsByURL(ctx, bearerToken, url)
+		t, nextSearchURLPath, err := collectTweetsByURL(ctx, bearerToken, url)
 		if err != nil {
 			return err
 		}
@@ -46,8 +46,8 @@ func getTweets(bearerToken, topic string) error {
 	return nil
 }
 
-// getTweetsByURL gets the tweets based on URL path.
-func getTweetsByURL(ctx context.Context, bearerToken, url string) ([]Tweet, string, error) {
+// collectTweetsByURL collects the tweets based on URL path.
+func collectTweetsByURL(ctx context.Context, bearerToken, url string) ([]Tweet, string, error) {
 	// Create HTTP request.
 	req, err := http.NewRequestWithContext(ctx, "GET", url, http.NoBody)
 	if err != nil {
