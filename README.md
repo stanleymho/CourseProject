@@ -9,7 +9,7 @@ This project is to perform _sentiment analysis_ on the Twitter tweets related to
 ## Tools
 
 There are several tools developed for this project:
-1. _tweetscollect_ for collecting the tweets for a topic from _Twitter_ into a dataset.
+1. _tweetscollect_ for collecting the tweets for a topic from _Twitter_ for the past 7 days into a dataset.
 2. _sentimentalyze_ for performing _sentiment analysis_ on the dataset.
 3. TBD for creating a sentiment trend graph based on the analyzed data in the dataset.
 
@@ -22,21 +22,21 @@ To build and run the tools, there are several prerequisites:
 
 ### tweetscollect
 
-_tweetscollect_ is a tool for collecting the tweets for a topic from _Twitter_ into a dataset.
+_tweetscollect_ is a tool for collecting the tweets for a topic from _Twitter_ for the past 7 days into a dataset. To run the tool, you must have the _bearer token_ from your _Twitter developer account_. In addition, the _Twitter developer account_ has rate limit on the maximum number of requests allowed in a 15-minutes time window, and collecting the tweets for one topic alone might get very close to the limit. Hence, in order to use the tool successfully, please run it at most once in a 15-minutes time window.
 ```
 # Build tweetscollect into an executable.
 #
 $ go build ./cmd/tweetscollect/...
 
-# Run tweetscollect to collect tweets for a topic, by
-# using the bearer token from your Twitter developer
-# account, and write the collected tweets to a file.
+# Run tweetscollect to collect tweets for a topic, by using the bearer token
+# from your Twitter developer account, and write the collected tweets to file.
 #
-$ tweetscollect -b "<bearer-token>" -t "<topic>" -o <output-file>
+$ ./tweetscollect -b "<bearer-token>" -t "<topic>" -o <output-file>
 Collecting tweets from Twitter on topic "<topic>" ...
 
 { "date": "2021-11-15 17:56:14 +0000 +0000", "text": "JUST IN: Ohio Attorney General sues Facebook (Meta) for securities fraud.", "lang": "en", "favorite": 1077, "retweet": 328 }
 ...
+
 Writing collected tweets to <output-file> ...
 Done.
 ```
