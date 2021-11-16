@@ -42,7 +42,7 @@ func NewCommand() *cobra.Command {
 	viper.SetEnvPrefix("tweetscollect")
 
 	cmd := &cobra.Command{
-		Use:   "tweetscollect -b <bearer-token> -t <topic> -o <output-file>",
+		Use:   "tweetscollect -b <bearer-token> -t <topic> [-o <output-file>]",
 		Short: "tweetscollect is a tool for collecting tweets for a topic.",
 		Long:  `tweetscollect is a tool for collecting tweets for a topic from Twitter.`,
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
@@ -70,7 +70,7 @@ func NewCommand() *cobra.Command {
 	cmd.Flags().StringP(flagBearerToken, shortHandBearerToken, "", "Bearer token")
 	_ = viper.BindPFlag(vBearerToken, cmd.Flags().Lookup(flagBearerToken))
 
-	cmd.Flags().StringP(flagOutputFile, shortHandOutputFile, "", "Output file")
+	cmd.Flags().StringP(flagOutputFile, shortHandOutputFile, "tweets.json", "Output file")
 	_ = viper.BindPFlag(vOutputFile, cmd.Flags().Lookup(flagOutputFile))
 
 	cmd.Flags().StringP(flagTopic, shortHandTopic, "", "Topic, e.g. Facebook")
