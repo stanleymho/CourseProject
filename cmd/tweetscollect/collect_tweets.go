@@ -38,7 +38,7 @@ func collectTweets(bearerToken, topic, outputFile string) error {
 		for _, tweet := range tweets {
 			createdAt, _ := parseDate(tweet.CreatedAt)
 			text := tweet.NormalizedText()
-			fmt.Printf("{ \"date\"=\"%v\", \"text\"=\"%s\", \"lang\"=\"%s\", \"favorite\"=%d, \"retweet\"=%d }\n",
+			fmt.Printf("{ \"date\": \"%v\", \"text\": \"%s\", \"lang\": \"%s\", \"favorite\": %d, \"retweet\": %d }\n",
 				createdAt, text, tweet.Lang, tweet.FavoriteCount, tweet.RetweetCount)
 		}
 
@@ -63,16 +63,19 @@ func collectTweets(bearerToken, topic, outputFile string) error {
 
 	// Output all tweets to the file.
 	f.WriteString("{\n")
+	f.WriteString("\t\"data\": [\n")
+
 	for i, tweet := range collectedTweets {
 		createdAt, _ := parseDate(tweet.CreatedAt)
 		text := tweet.NormalizedText()
 		seperator := ","
-		if i < len(collectedTweets)-1 {
+		if i == len(collectedTweets)-1 {
 			seperator = ""
 		}
-		f.WriteString(fmt.Sprintf("\t{ \"date\"=\"%v\", \"text\"=\"%s\", \"lang\"=\"%s\", \"favorite\"=%d, \"retweet\"=%d }%s\n",
+		f.WriteString(fmt.Sprintf("\t\t{ \"date\": \"%v\", \"text\": \"%s\", \"lang\": \"%s\", \"favorite\": %d, \"retweet\": %d }%s\n",
 			createdAt, text, tweet.Lang, tweet.FavoriteCount, tweet.RetweetCount, seperator))
 	}
+	f.WriteString("\t]\n")
 	f.WriteString("}\n")
 
 	fmt.Printf("Done.\n")
