@@ -34,6 +34,7 @@ func (t *TweetV1) NormalizedText() string {
 	s = strings.ReplaceAll(s, "\n", "\\n")
 	s = strings.ReplaceAll(s, "\r", "\\r")
 	s = strings.ReplaceAll(s, "\t", "\\t")
+	s = strings.ReplaceAll(s, "\"", "\\\"")
 	return s
 }
 
