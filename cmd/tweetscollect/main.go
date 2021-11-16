@@ -25,13 +25,16 @@ func main() {
 
 const (
 	vBearerToken = "bearer-token"
+	vOutputFile  = "output-file"
 	vTopic       = "topic"
 
 	flagBearerToken = "bearer-token"
+	flagOutputFile  = "output-file"
 	flagTopic       = "topic"
 
-	shortHandTopic       = "t"
 	shortHandBearerToken = "b"
+	shortHandOutputFile  = "o"
+	shortHandTopic       = "t"
 )
 
 // NewCommand returns a new cobra.Command for the base command
@@ -39,7 +42,7 @@ func NewCommand() *cobra.Command {
 	viper.SetEnvPrefix("tweetscollect")
 
 	cmd := &cobra.Command{
-		Use:   "tweetscollect -b <bearer-token> -t <topic>",
+		Use:   "tweetscollect -b <bearer-token> -t <topic> -o <output-file>",
 		Short: "tweetscollect is a tool for collecting tweets for a topic.",
 		Long:  `tweetscollect is a tool for collecting tweets for a topic from Twitter.`,
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
@@ -52,12 +55,13 @@ func NewCommand() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Extract the arguments.
 			bearerToken := viper.GetString(vBearerToken)
+			outputFile := viper.GetString(vOutputFile)
 			topic := viper.GetString(vTopic)
-			if bearerToken == "" || topic == "" {
+			if bearerToken == "" || topic == "" || outputFile == "" {
 				return cmd.Usage()
 			}
 
-			return collectTweets(bearerToken, topic)
+			return collectTweets(bearerToken, topic, outputFile)
 		},
 	}
 
@@ -65,6 +69,9 @@ func NewCommand() *cobra.Command {
 
 	cmd.Flags().StringP(flagBearerToken, shortHandBearerToken, "", "Bearer token")
 	_ = viper.BindPFlag(vBearerToken, cmd.Flags().Lookup(flagBearerToken))
+
+	cmd.Flags().StringP(flagOutputFile, shortHandOutputFile, "", "Output file")
+	_ = viper.BindPFlag(vOutputFile, cmd.Flags().Lookup(flagOutputFile))
 
 	cmd.Flags().StringP(flagTopic, shortHandTopic, "", "Topic, e.g. Facebook")
 	_ = viper.BindPFlag(vTopic, cmd.Flags().Lookup(flagTopic))

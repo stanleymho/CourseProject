@@ -6,14 +6,13 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"os"
 	"strings"
-
-	"github.com/hashicorp/go-retryablehttp"
 )
 
 // collectTweets collects the tweets for a topic.
-func collectTweets(bearerToken, topic string) error {
-	ctx := context.Background()
+func collectTweets(bearerToken, topic, outputFile string) error {
+	fmt.Printf("Collecting tweets from Twitter on topic \"%s\" ...\n\n", topic)
 
 	// Constuct URL.
 	var sb strings.Builder
@@ -25,30 +24,58 @@ func collectTweets(bearerToken, topic string) error {
 	sb.WriteString("&q=" + url.QueryEscape(topic))
 	searchURLPath := sb.String()
 
-	tweets := make([]TweetV1, 0, 100)
+	ctx := context.Background()
+	collectedTweets := make([]TweetV1, 0, 100)
 	for {
 		url := fmt.Sprintf("%s%s", twitterSearchURL, searchURLPath)
-		t, nextSearchURLPath, err := collectTweetsByURL(ctx, bearerToken, url)
+		tweets, nextSearchURLPath, err := collectTweetsByURL(ctx, bearerToken, url)
 		if err != nil {
 			return err
 		}
 
-		for _, tweet := range t {
+		collectedTweets = append(collectedTweets, tweets...)
+
+		for _, tweet := range tweets {
 			createdAt, _ := parseDate(tweet.CreatedAt)
 			text := tweet.NormalizedText()
-			fmt.Printf("{ date=\"%v\", text=\"%s\", lang=\"%s\", favorite=%d, retweet=%d }\n",
+			fmt.Printf("{ \"date\"=\"%v\", \"text\"=\"%s\", \"lang\"=\"%s\", \"favorite\"=%d, \"retweet\"=%d }\n",
 				createdAt, text, tweet.Lang, tweet.FavoriteCount, tweet.RetweetCount)
 		}
 
-		tweets = append(tweets, t...)
-		searchURLPath = nextSearchURLPath
 		if nextSearchURLPath == "" {
 			break
 		}
+
 		// Ensure the search URL is with the proper tweet_mode etc.
+		searchURLPath = nextSearchURLPath
 		searchURLPath += "&tweet_mode=extended"
 		searchURLPath += "&include_entities=false"
 	}
+
+	fmt.Printf("\nWriting collected tweets to %s ...\n", outputFile)
+
+	// Create output file.
+	f, err := os.Create(outputFile)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+
+	// Output all tweets to the file.
+	f.WriteString("{\n")
+	for i, tweet := range collectedTweets {
+		createdAt, _ := parseDate(tweet.CreatedAt)
+		text := tweet.NormalizedText()
+		seperator := ","
+		if i < len(collectedTweets)-1 {
+			seperator = ""
+		}
+		f.WriteString(fmt.Sprintf("\t{ \"date\"=\"%v\", \"text\"=\"%s\", \"lang\"=\"%s\", \"favorite\"=%d, \"retweet\"=%d }%s\n",
+			createdAt, text, tweet.Lang, tweet.FavoriteCount, tweet.RetweetCount, seperator))
+	}
+	f.WriteString("}\n")
+
+	fmt.Printf("Done.\n")
 
 	return nil
 }
@@ -63,16 +90,21 @@ func collectTweetsByURL(ctx context.Context, bearerToken, url string) ([]TweetV1
 	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", bearerToken))
 
 	// Use retryable HTTP library with automatic retries and exponential back-off.
-	retryClient := retryablehttp.NewClient()
-	retryClient.Logger = nil
-	client := retryClient.StandardClient()
+	// retryClient := retryablehttp.NewClient()
+	// retryClient.Logger = nil
+	// client := retryClient.StandardClient()
+	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
 		return nil, "", err
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode != http.StatusOK {
+	if resp.StatusCode == http.StatusTooManyRequests {
+		// If we hit rate limit, simply return.
+		return make([]TweetV1, 0, 0), "", nil
+	} else if resp.StatusCode != http.StatusOK {
+		// If we hit other unexpected status code, returns error.
 		return nil, "", fmt.Errorf("unexpected status code (%d) from %s",
 			resp.StatusCode, url)
 	}
