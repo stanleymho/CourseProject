@@ -30,9 +30,15 @@ $ go build ./cmd/tweetscollect/...
 
 # Run tweetscollect to collect tweets for a topic, by
 # using the bearer token from your Twitter developer
-# account.
+# account, and write the collected tweets to a file.
 #
-$ ./tweetscollect -b <bearer-token> -t <topic>
+$ tweetscollect -b "<bearer-token>" -t "<topic>" -o <output-file>
+Collecting tweets from Twitter on topic "<topic>" ...
+
+{ "date"="2021-11-15 17:56:14 +0000 +0000", "text"="JUST IN: Ohio Attorney General sues Facebook (Meta) for securities fraud.", "lang"="en", "favorite"=1077, "retweet"=328 }
+...
+Writing collected tweets to <output-file> ...
+Done.
 ```
 
 ### sentimentalyze
