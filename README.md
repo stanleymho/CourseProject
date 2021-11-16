@@ -44,17 +44,20 @@ Done.
 ### sentimentalyze
 
 _sentimentalyze_ is a tool for performing _sentiment analysis_ over the dataset using _Amazon Comprehend_.
+To run the tool, you must have the access key ID and secret access key from your _AWS account_.
 
 ```
 # Build sentimentalyze into an executable.
 #
 $ go build ./cmd/sentimentalyze/...
 
-# Run _sentimentalyze_ to perform sentiment analysis, by
-# using the access key ID and secret access key from your
+# Run _sentimentalyze_ to perform sentiment analysis on the tweets in the
+# input file, by using the access key ID and secret access key from your
 # AWS account.
 #
-$ ./sentimentalyze -a <access-key-id> -s <secret-access-key>
+$ ./sentimentalyze -i <input-file> -o <output-file> -a <access-key-id> -s <secret-access-key> [-r <region>]
+Reading 40655 tweets from ../tweetscollect/tweets.json ...
+...
 ```
 
 ### TBD
