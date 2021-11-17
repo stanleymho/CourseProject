@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"os"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/credentials"
@@ -16,31 +17,37 @@ import (
 func analyzeSentiment(ctx context.Context, inputFile, outputFile, region, accessKeyID,
 	secretAccessKey string) error {
 
-	f, err := ioutil.ReadFile(inputFile)
+	fileData, err := ioutil.ReadFile(inputFile)
 	if err != nil {
 		return err
 	}
 
 	data := TweetsData{}
-	if err = json.Unmarshal([]byte(f), &data); err != nil {
+	if err = json.Unmarshal([]byte(fileData), &data); err != nil {
 		return err
 	}
 
 	fmt.Printf("Reading %d tweets from %s ...\n", len(data.Tweets), inputFile)
 
-	// Process regular tweets first.
-	sentimentMap := make(map[string]types.SentimentType)
-	counter := 0
+	// Process all the tweets to determine the normalized set of tweets to process.
+	uniqueTweets := make(map[string]types.SentimentType)
 	for _, tweet := range data.Tweets {
-		// Skip retweets.
-		if tweet.IsRetweeted() {
-			continue
+		key := tweet.Key()
+		if _, ok := uniqueTweets[key]; !ok {
+			// fmt.Printf("*** Tweet: %s -> %s\n", tweet.Text, tweet.NormalizedText())
+			uniqueTweets[key] = types.SentimentTypeNeutral
 		}
-		text := tweet.NormalizedText()
-		//		sentiment, err := analyzeSentimentInText(ctx, region, accessKeyID, secretAccessKey, t.Lang, text)
-		//if err != nil {
-		//	return err
-		//}
+	}
+
+	fmt.Printf("Normalizing %d tweets into %d unique tweets ...\n", len(data.Tweets), len(uniqueTweets))
+	fmt.Printf("Performing sentiment analysis on the unique tweets ...\n")
+
+	counter := 0
+	for tweet, _ := range uniqueTweets {
+		// sentiment, err := analyzeSentimentInText(ctx, region, accessKeyID, secretAccessKey, t.Lang, text)
+		// if err != nil {
+		//	  return err
+
 		sentiment := types.SentimentTypeNeutral
 		if counter%4 == 0 {
 			sentiment = types.SentimentTypeNeutral
@@ -52,32 +59,39 @@ func analyzeSentiment(ctx context.Context, inputFile, outputFile, region, access
 			sentiment = types.SentimentTypeMixed
 		}
 
-		fmt.Printf("%v: \"%s\"\n", sentiment, text)
+		uniqueTweets[tweet] = sentiment
 		counter++
-		key := text
-		if len(text) > 100 {
-			key = text[:100]
-		}
-		sentimentMap[key] = sentiment
 	}
 
-	// Process retweets first.
-	for _, tweet := range data.Tweets {
-		// Skip regular tweets.
-		if !tweet.IsRetweeted() {
-			continue
-		}
+	fmt.Printf("Writing tweets with sentiment to %s ...\n", outputFile)
 
+	// Create output file.
+	f, err := os.Create(outputFile)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+
+	// Output all tweets to the file.
+	f.WriteString("{\n")
+	f.WriteString("\t\"data\": [\n")
+
+	for i, tweet := range data.Tweets {
+		date := tweet.Date
 		text := tweet.NormalizedText()
-		key := text
-		if len(text) > 100 {
-			key = text[:100]
+		sentiment := uniqueTweets[tweet.Key()]
+		seperator := ","
+		if i == len(data.Tweets)-1 {
+			seperator = ""
 		}
 
-		if _, ok := sentimentMap[key]; !ok {
-			fmt.Printf("Sentiment not found for retweet: %s\n", text)
-		}
+		f.WriteString(fmt.Sprintf("\t\t{ \"date\": \"%v\", \"text\": \"%s\", \"lang\": \"%s\", \"favorite\": %d, \"retweet\": %d, \"sentiment\": \"%s\" }%s\n",
+			date, text, tweet.Lang, tweet.FavoriteCount, tweet.RetweetCount, sentiment, seperator))
 	}
+	f.WriteString("\t]\n")
+	f.WriteString("}\n")
+
+	fmt.Printf("Done.\n")
 
 	return nil
 }
