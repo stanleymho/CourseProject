@@ -44,35 +44,29 @@ func analyzeSentiment(ctx context.Context, inputFile, outputFile, region, access
 	fmt.Printf("Performing sentiment analysis on the unique tweets ...\n")
 
 	counter := 0
-	useAmazonComprehend := true
+	textList := make([]string, 0, 25)
 	for tweet, _ := range uniqueTweets {
 		cleanText := cleanedTweets[tweet]
-		sentiment := types.SentimentTypeNeutral
+		textList = append(textList, cleanText)
 
-		if counter > 10 {
-			break
-		}
-
-		if useAmazonComprehend {
-			sentiment, err = analyzeSentimentInText(ctx, region, accessKeyID, secretAccessKey, "en", cleanText)
+		if counter%25 == 24 || counter == len(uniqueTweets)-1 || counter == 27 {
+			sentimentMap, err := analyzeSentimentInText(ctx, region, accessKeyID, secretAccessKey, "en", textList)
 			if err != nil {
 				return err
 			}
-		} else {
-			if counter%4 == 0 {
-				sentiment = types.SentimentTypeNeutral
-			} else if counter%4 == 1 {
-				sentiment = types.SentimentTypePositive
-			} else if counter%4 == 2 {
-				sentiment = types.SentimentTypeNegative
-			} else if counter%4 == 3 {
-				sentiment = types.SentimentTypeMixed
-			}
-		}
 
-		fmt.Printf("{ \"text\": \"%s\", \"sentiment\": \"%v\" }\n", displayText(cleanText), sentiment)
-		uniqueTweets[tweet] = sentiment
+			for text, sentiment := range sentimentMap {
+				fmt.Printf("{ \"text\": \"%s\", \"sentiment\": \"%v\" }\n", displayText(text), sentiment)
+				uniqueTweets[tweet] = sentiment
+			}
+			textList = nil
+		}
 		counter++
+
+		// Remove for production.
+		if counter > 27 {
+			break
+		}
 	}
 
 	fmt.Printf("Writing tweets with analyzed sentiment to %s ...\n", outputFile)
@@ -109,7 +103,9 @@ func analyzeSentiment(ctx context.Context, inputFile, outputFile, region, access
 
 // analyzeSentimentInText performs sentiment analysis on a text using Amazon Comprehend.
 func analyzeSentimentInText(ctx context.Context, region, accessKeyID, secretAccessKey,
-	lang, text string) (types.SentimentType, error) {
+	lang string, textList []string) (map[string]types.SentimentType, error) {
+
+	result := make(map[string]types.SentimentType)
 
 	cfg := &aws.Config{
 		Region:      region,
@@ -117,12 +113,15 @@ func analyzeSentimentInText(ctx context.Context, region, accessKeyID, secretAcce
 	}
 
 	comprehendClient := comprehend.NewFromConfig(*cfg)
-	input := &comprehend.DetectSentimentInput{}
+	input := &comprehend.BatchDetectSentimentInput{}
+	//	input := &comprehend.DetectSentimentInput{}
 	input.LanguageCode = types.LanguageCode(lang)
-	input.Text = &text
-	output, err := comprehendClient.DetectSentiment(ctx, input)
+	for _, text := range textList {
+		input.TextList = append(input.TextList, text)
+	}
+	output, err := comprehendClient.BatchDetectSentiment(ctx, input)
 	if err != nil {
-		return types.SentimentTypeNeutral, err
+		return result, err
 	}
 
 	/*
@@ -133,5 +132,9 @@ func analyzeSentimentInText(ctx context.Context, region, accessKeyID, secretAcce
 		fmt.Printf("  *** Negative: %v\n", *output.SentimentScore.Negative)
 		fmt.Printf("  *** Neutral: %v\n", *output.SentimentScore.Neutral)
 	*/
-	return output.Sentiment, nil
+	for _, r := range output.ResultList {
+		result[textList[*r.Index]] = r.Sentiment
+	}
+
+	return result, nil
 }
