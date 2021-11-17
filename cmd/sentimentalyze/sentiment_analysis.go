@@ -62,7 +62,7 @@ func analyzeSentiment(ctx context.Context, inputFile, outputFile, region, access
 		counter++
 	}
 
-	fmt.Printf("Writing tweets with sentiment to %s ...\n", outputFile)
+	fmt.Printf("Writing tweets with analyzed sentiment to %s ...\n", outputFile)
 
 	// Create output file.
 	f, err := os.Create(outputFile)

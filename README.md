@@ -54,22 +54,25 @@ _sentimentalyze_ is a tool for performing _sentiment analysis_ over the dataset
 using _Amazon Comprehend_. To run the tool, you must have the access key ID and
 secret access key from your _AWS account_.
 
-Please be aware that the tool will use _Amazon Comprehend_ from your _AWS
+Please be aware that this tool will use _Amazon Comprehend_ from your _AWS
 account_, and your account will be charged. On average, each run involves
 between 40,000 to 60,000 tweets, and that's approximately 15,000 to 25,000
-unique tweets costing about $1.5 to $2.5 to perform sentiment analysis.
+unique tweets which costs $1.5 to $2.5 to perform the _sentiment analysis_.
 ```
 # Build sentimentalyze into an executable.
 #
 $ go build ./cmd/sentimentalyze/...
 
-# Run _sentimentalyze_ to perform sentiment analysis on the tweets in the
+# Run sentimentalyze to perform sentiment analysis on the tweets in the
 # input file, by using the access key ID and secret access key from your
 # AWS account.
 #
 $ ./sentimentalyze -i <input-file> -o <output-file> -a <access-key-id> -s <secret-access-key> [-r <region>]
 Reading 40655 tweets from ../tweetscollect/tweets.json ...
-...
+Normalizing 40655 tweets into 13089 unique tweets ...
+Performing sentiment analysis on the unique tweets ...
+Writing tweets with analyzed sentiment to tweets-sentiment.json ...
+Done.
 ```
 
 ### TBD
