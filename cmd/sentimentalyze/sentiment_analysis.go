@@ -43,6 +43,13 @@ func analyzeSentiment(ctx context.Context, inputFile, outputFile, region, access
 	fmt.Printf("Normalizing %d tweets into %d unique tweets ...\n", len(data.Tweets), len(uniqueTweets))
 	fmt.Printf("Performing sentiment analysis on the unique tweets ...\n")
 
+	// Create client for Amazon Comprehend.
+	cfg := &aws.Config{
+		Region:      region,
+		Credentials: credentials.NewStaticCredentialsProvider(accessKeyID, secretAccessKey, ""),
+	}
+	comprehendClient := comprehend.NewFromConfig(*cfg)
+
 	counter := 0
 	textList := make([]string, 0, 25)
 	for tweet, _ := range uniqueTweets {
@@ -50,7 +57,7 @@ func analyzeSentiment(ctx context.Context, inputFile, outputFile, region, access
 		textList = append(textList, cleanText)
 
 		if counter%25 == 24 || counter == len(uniqueTweets)-1 || counter == 27 {
-			sentimentMap, err := analyzeSentimentInText(ctx, region, accessKeyID, secretAccessKey, "en", textList)
+			sentimentMap, err := analyzeSentimentInTextList(ctx, comprehendClient, "en", textList)
 			if err != nil {
 				return err
 			}
@@ -101,20 +108,13 @@ func analyzeSentiment(ctx context.Context, inputFile, outputFile, region, access
 	return nil
 }
 
-// analyzeSentimentInText performs sentiment analysis on a text using Amazon Comprehend.
-func analyzeSentimentInText(ctx context.Context, region, accessKeyID, secretAccessKey,
+// analyzeSentimentInTextList performs sentiment analysis on a text list using Amazon Comprehend.
+func analyzeSentimentInTextList(ctx context.Context, comprehendClient *comprehend.Client,
 	lang string, textList []string) (map[string]types.SentimentType, error) {
-
 	result := make(map[string]types.SentimentType)
 
-	cfg := &aws.Config{
-		Region:      region,
-		Credentials: credentials.NewStaticCredentialsProvider(accessKeyID, secretAccessKey, ""),
-	}
-
-	comprehendClient := comprehend.NewFromConfig(*cfg)
+	// Perform sentiment analysis with Amazon Comprehend.
 	input := &comprehend.BatchDetectSentimentInput{}
-	//	input := &comprehend.DetectSentimentInput{}
 	input.LanguageCode = types.LanguageCode(lang)
 	for _, text := range textList {
 		input.TextList = append(input.TextList, text)
@@ -124,17 +124,9 @@ func analyzeSentimentInText(ctx context.Context, region, accessKeyID, secretAcce
 		return result, err
 	}
 
-	/*
-		fmt.Printf("*** %v\n", output)
-		fmt.Printf("  *** Sentiment: %v\n", output.Sentiment)
-		fmt.Printf("  *** Positive: %v\n", *output.SentimentScore.Positive)
-		fmt.Printf("  *** Mixed: %v\n", *output.SentimentScore.Mixed)
-		fmt.Printf("  *** Negative: %v\n", *output.SentimentScore.Negative)
-		fmt.Printf("  *** Neutral: %v\n", *output.SentimentScore.Neutral)
-	*/
+	// Put the result together.
 	for _, r := range output.ResultList {
 		result[textList[*r.Index]] = r.Sentiment
 	}
-
 	return result, nil
 }
