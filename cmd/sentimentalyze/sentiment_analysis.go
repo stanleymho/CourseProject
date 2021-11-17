@@ -51,12 +51,13 @@ func analyzeSentiment(ctx context.Context, inputFile, outputFile, region, access
 	comprehendClient := comprehend.NewFromConfig(*cfg)
 
 	counter := 0
+	tweetsLimit := 5
 	textList := make([]string, 0, 25)
-	for tweet, _ := range uniqueTweets {
-		cleanText := cleanedTweets[tweet]
+	for key, _ := range uniqueTweets {
+		cleanText := cleanedTweets[key]
 		textList = append(textList, cleanText)
 
-		if counter%25 == 24 || counter == len(uniqueTweets)-1 || counter == 27 {
+		if counter%25 == 24 || counter == len(uniqueTweets)-1 || counter == tweetsLimit {
 			sentimentMap, err := analyzeSentimentInTextList(ctx, comprehendClient, "en", textList)
 			if err != nil {
 				return err
@@ -64,14 +65,14 @@ func analyzeSentiment(ctx context.Context, inputFile, outputFile, region, access
 
 			for text, sentiment := range sentimentMap {
 				fmt.Printf("{ \"text\": \"%s\", \"sentiment\": \"%v\" }\n", displayText(text), sentiment)
-				uniqueTweets[tweet] = sentiment
+				uniqueTweets[key] = sentiment
 			}
 			textList = nil
 		}
 		counter++
 
 		// Remove for production.
-		if counter > 27 {
+		if counter > tweetsLimit {
 			break
 		}
 	}
@@ -90,15 +91,16 @@ func analyzeSentiment(ctx context.Context, inputFile, outputFile, region, access
 	f.WriteString("\t\"data\": [\n")
 
 	for i, tweet := range data.Tweets {
-		date := tweet.Date
-		sentiment := uniqueTweets[tweet.Key()]
+		key := tweet.Key()
+		sentiment := uniqueTweets[key]
 		seperator := ","
 		if i == len(data.Tweets)-1 {
 			seperator = ""
 		}
 
 		f.WriteString(fmt.Sprintf("\t\t{ \"date\": \"%v\", \"text\": \"%s\", \"lang\": \"%s\", \"favorite\": %d, \"retweet\": %d, \"sentiment\": \"%s\" }%s\n",
-			date, displayText(tweet.Text), tweet.Lang, tweet.FavoriteCount, tweet.RetweetCount, sentiment, seperator))
+			tweet.Date, displayText(tweet.Text), tweet.Lang, tweet.FavoriteCount,
+			tweet.RetweetCount, sentiment, seperator))
 	}
 	f.WriteString("\t]\n")
 	f.WriteString("}\n")
