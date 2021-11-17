@@ -34,7 +34,6 @@ func analyzeSentiment(ctx context.Context, inputFile, outputFile, region, access
 	for _, tweet := range data.Tweets {
 		key := tweet.Key()
 		if _, ok := uniqueTweets[key]; !ok {
-			// fmt.Printf("*** Tweet: %s -> %s\n", tweet.Text, tweet.NormalizedText())
 			uniqueTweets[key] = types.SentimentTypeNeutral
 		}
 	}
