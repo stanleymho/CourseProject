@@ -31,10 +31,12 @@ func analyzeSentiment(ctx context.Context, inputFile, outputFile, region, access
 
 	// Process all the tweets to determine the normalized set of tweets to process.
 	uniqueTweets := make(map[string]types.SentimentType)
+	cleanedTweets := make(map[string]string)
 	for _, tweet := range data.Tweets {
 		key := tweet.Key()
 		if _, ok := uniqueTweets[key]; !ok {
 			uniqueTweets[key] = types.SentimentTypeNeutral
+			cleanedTweets[key] = tweet.cleanText()
 		}
 	}
 
@@ -42,12 +44,17 @@ func analyzeSentiment(ctx context.Context, inputFile, outputFile, region, access
 	fmt.Printf("Performing sentiment analysis on the unique tweets ...\n")
 
 	counter := 0
+	useAmazonComprehend := true
 	for tweet, _ := range uniqueTweets {
+		cleanText := cleanedTweets[tweet]
 		sentiment := types.SentimentTypeNeutral
 
-		useAmazonComprehend := false
+		if counter > 10 {
+			break
+		}
+
 		if useAmazonComprehend {
-			sentiment, err = analyzeSentimentInText(ctx, region, accessKeyID, secretAccessKey, "en", tweet)
+			sentiment, err = analyzeSentimentInText(ctx, region, accessKeyID, secretAccessKey, "en", cleanText)
 			if err != nil {
 				return err
 			}
@@ -63,7 +70,7 @@ func analyzeSentiment(ctx context.Context, inputFile, outputFile, region, access
 			}
 		}
 
-		fmt.Printf("{ \"text\": \"%s\", \"sentiment\": \"%v\" }\n", normalizedText(tweet), sentiment)
+		fmt.Printf("{ \"text\": \"%s\", \"sentiment\": \"%v\" }\n", displayText(cleanText), sentiment)
 		uniqueTweets[tweet] = sentiment
 		counter++
 	}
@@ -90,7 +97,7 @@ func analyzeSentiment(ctx context.Context, inputFile, outputFile, region, access
 		}
 
 		f.WriteString(fmt.Sprintf("\t\t{ \"date\": \"%v\", \"text\": \"%s\", \"lang\": \"%s\", \"favorite\": %d, \"retweet\": %d, \"sentiment\": \"%s\" }%s\n",
-			date, normalizedText(tweet.Text), tweet.Lang, tweet.FavoriteCount, tweet.RetweetCount, sentiment, seperator))
+			date, displayText(tweet.Text), tweet.Lang, tweet.FavoriteCount, tweet.RetweetCount, sentiment, seperator))
 	}
 	f.WriteString("\t]\n")
 	f.WriteString("}\n")
