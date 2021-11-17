@@ -43,19 +43,24 @@ func analyzeSentiment(ctx context.Context, inputFile, outputFile, region, access
 
 	counter := 0
 	for tweet, _ := range uniqueTweets {
-		// sentiment, err := analyzeSentimentInText(ctx, region, accessKeyID, secretAccessKey, t.Lang, text)
-		// if err != nil {
-		//	  return err
-
 		sentiment := types.SentimentTypeNeutral
-		if counter%4 == 0 {
-			sentiment = types.SentimentTypeNeutral
-		} else if counter%4 == 1 {
-			sentiment = types.SentimentTypePositive
-		} else if counter%4 == 2 {
-			sentiment = types.SentimentTypeNegative
-		} else if counter%4 == 3 {
-			sentiment = types.SentimentTypeMixed
+
+		useAmazonComprehend := false
+		if useAmazonComprehend {
+			sentiment, err = analyzeSentimentInText(ctx, region, accessKeyID, secretAccessKey, "en", tweet)
+			if err != nil {
+				return err
+			}
+		} else {
+			if counter%4 == 0 {
+				sentiment = types.SentimentTypeNeutral
+			} else if counter%4 == 1 {
+				sentiment = types.SentimentTypePositive
+			} else if counter%4 == 2 {
+				sentiment = types.SentimentTypeNegative
+			} else if counter%4 == 3 {
+				sentiment = types.SentimentTypeMixed
+			}
 		}
 
 		uniqueTweets[tweet] = sentiment
@@ -77,7 +82,6 @@ func analyzeSentiment(ctx context.Context, inputFile, outputFile, region, access
 
 	for i, tweet := range data.Tweets {
 		date := tweet.Date
-		text := tweet.NormalizedText()
 		sentiment := uniqueTweets[tweet.Key()]
 		seperator := ","
 		if i == len(data.Tweets)-1 {
@@ -85,7 +89,7 @@ func analyzeSentiment(ctx context.Context, inputFile, outputFile, region, access
 		}
 
 		f.WriteString(fmt.Sprintf("\t\t{ \"date\": \"%v\", \"text\": \"%s\", \"lang\": \"%s\", \"favorite\": %d, \"retweet\": %d, \"sentiment\": \"%s\" }%s\n",
-			date, text, tweet.Lang, tweet.FavoriteCount, tweet.RetweetCount, sentiment, seperator))
+			date, tweet.NormalizedText(), tweet.Lang, tweet.FavoriteCount, tweet.RetweetCount, sentiment, seperator))
 	}
 	f.WriteString("\t]\n")
 	f.WriteString("}\n")
