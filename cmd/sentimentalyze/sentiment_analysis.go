@@ -63,6 +63,7 @@ func analyzeSentiment(ctx context.Context, inputFile, outputFile, region, access
 			}
 		}
 
+		fmt.Printf("{ \"text\": \"%s\", \"sentiment\": \"%v\" }\n", tweet, sentiment)
 		uniqueTweets[tweet] = sentiment
 		counter++
 	}
