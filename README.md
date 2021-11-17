@@ -22,7 +22,14 @@ To build and run the tools, there are several prerequisites:
 
 ### tweetscollect
 
-_tweetscollect_ is a tool for collecting the tweets for a topic from _Twitter_ for the past 7 days into a dataset. To run the tool, you must have the _bearer token_ from your _Twitter developer account_. In addition, the _Twitter developer account_ has rate limit on the maximum number of requests allowed in a 15-minutes time window, and collecting the tweets for one topic alone might get very close to the limit. Hence, in order to use the tool successfully, please run it at most once in a 15-minutes time window.
+_tweetscollect_ is a tool for collecting the tweets for a topic from _Twitter_
+for the past 7 days into a dataset. To run the tool, you must have the _bearer
+token_ from your _Twitter developer account_.
+
+Notice that the _Twitter developer account_ has rate limit on the maximum number
+of requests allowed in a 15-minutes time window, and collecting the tweets for
+one topic alone might get very close to the limit. Hence, in order to use the
+tool successfully, please run it at most once in a 15-minutes time window.
 ```
 # Build tweetscollect into an executable.
 #
@@ -43,9 +50,14 @@ Done.
 
 ### sentimentalyze
 
-_sentimentalyze_ is a tool for performing _sentiment analysis_ over the dataset using _Amazon Comprehend_.
-To run the tool, you must have the access key ID and secret access key from your _AWS account_.
+_sentimentalyze_ is a tool for performing _sentiment analysis_ over the dataset
+using _Amazon Comprehend_. To run the tool, you must have the access key ID and
+secret access key from your _AWS account_.
 
+Please be aware that the tool will use _Amazon Comprehend_ from your _AWS
+account_, and your account will be charged. On average, each run involves
+between 40,000 to 60,000 tweets, and that's approximately 15,000 to 25,000
+unique tweets costing about $1.5 to $2.5 to perform sentiment analysis.
 ```
 # Build sentimentalyze into an executable.
 #
