@@ -63,7 +63,7 @@ func analyzeSentiment(ctx context.Context, inputFile, outputFile, region, access
 			}
 		}
 
-		fmt.Printf("{ \"text\": \"%s\", \"sentiment\": \"%v\" }\n", tweet, sentiment)
+		fmt.Printf("{ \"text\": \"%s\", \"sentiment\": \"%v\" }\n", normalizedText(tweet), sentiment)
 		uniqueTweets[tweet] = sentiment
 		counter++
 	}
@@ -90,7 +90,7 @@ func analyzeSentiment(ctx context.Context, inputFile, outputFile, region, access
 		}
 
 		f.WriteString(fmt.Sprintf("\t\t{ \"date\": \"%v\", \"text\": \"%s\", \"lang\": \"%s\", \"favorite\": %d, \"retweet\": %d, \"sentiment\": \"%s\" }%s\n",
-			date, tweet.NormalizedText(), tweet.Lang, tweet.FavoriteCount, tweet.RetweetCount, sentiment, seperator))
+			date, normalizedText(tweet.Text), tweet.Lang, tweet.FavoriteCount, tweet.RetweetCount, sentiment, seperator))
 	}
 	f.WriteString("\t]\n")
 	f.WriteString("}\n")
