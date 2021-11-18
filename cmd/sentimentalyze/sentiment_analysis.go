@@ -30,17 +30,17 @@ func analyzeSentiment(ctx context.Context, inputFile, outputFile, region, access
 	fmt.Printf("Reading %d tweets from %s ...\n", len(data.Tweets), inputFile)
 
 	// Process all the tweets to determine the normalized set of tweets to process.
-	uniqueTweets := make(map[string]types.SentimentType)
-	cleanedTweets := make(map[string]string)
+	tweetSentimentMap := make(map[string]types.SentimentType)
+	originalTweets := make(map[string]string)
 	for _, tweet := range data.Tweets {
-		key := tweet.Key()
-		if _, ok := uniqueTweets[key]; !ok {
-			uniqueTweets[key] = types.SentimentTypeNeutral
-			cleanedTweets[key] = tweet.cleanText()
+		key := hashKey(tweet.Text)
+		if _, ok := tweetSentimentMap[key]; !ok {
+			tweetSentimentMap[key] = types.SentimentTypeNeutral
+			originalTweets[key] = tweet.Text
 		}
 	}
 
-	fmt.Printf("Normalizing %d tweets into %d unique tweets ...\n", len(data.Tweets), len(uniqueTweets))
+	fmt.Printf("Normalizing %d tweets into %d unique tweets ...\n", len(data.Tweets), len(tweetSentimentMap))
 	fmt.Printf("Performing sentiment analysis on the unique tweets ...\n")
 
 	// Create client for Amazon Comprehend.
@@ -52,22 +52,24 @@ func analyzeSentiment(ctx context.Context, inputFile, outputFile, region, access
 
 	counter := 0
 	tweetsLimit := 5
-	textList := make([]string, 0, 25)
-	for key, _ := range uniqueTweets {
-		cleanText := cleanedTweets[key]
-		textList = append(textList, cleanText)
+	keyList := make([]string, 0, 25)
+	tweetList := make([]string, 0, 25)
+	for key, _ := range tweetSentimentMap {
+		keyList = append(keyList, key)
+		tweetList = append(tweetList, trimTweet(originalTweets[key]))
 
-		if counter%25 == 24 || counter == len(uniqueTweets)-1 || counter == tweetsLimit {
-			sentimentMap, err := analyzeSentimentInTextList(ctx, comprehendClient, "en", textList)
+		if counter%25 == 24 || counter == len(tweetSentimentMap)-1 || counter == tweetsLimit {
+			textSentimentMap, err := analyzeSentimentInTextList(ctx, comprehendClient, "en", tweetList)
 			if err != nil {
 				return err
 			}
 
-			for text, sentiment := range sentimentMap {
+			for text, sentiment := range textSentimentMap {
 				fmt.Printf("{ \"text\": \"%s\", \"sentiment\": \"%v\" }\n", displayText(text), sentiment)
-				uniqueTweets[key] = sentiment
+				tweetSentimentMap[hashKey(text)] = sentiment
 			}
-			textList = nil
+			keyList = nil
+			tweetList = nil
 		}
 		counter++
 
@@ -76,6 +78,14 @@ func analyzeSentiment(ctx context.Context, inputFile, outputFile, region, access
 			break
 		}
 	}
+
+	/*
+		for key, sentiment := range tweetSentimentMap {
+			if sentiment == types.SentimentTypePositive || sentiment == types.SentimentTypeNegative {
+				fmt.Printf("*** %s -> %v\n", displayText(key), sentiment)
+			}
+		}
+	*/
 
 	fmt.Printf("Writing tweets with analyzed sentiment to %s ...\n", outputFile)
 
@@ -91,8 +101,7 @@ func analyzeSentiment(ctx context.Context, inputFile, outputFile, region, access
 	f.WriteString("\t\"data\": [\n")
 
 	for i, tweet := range data.Tweets {
-		key := tweet.Key()
-		sentiment := uniqueTweets[key]
+		sentiment := tweetSentimentMap[hashKey(tweet.Text)]
 		seperator := ","
 		if i == len(data.Tweets)-1 {
 			seperator = ""
