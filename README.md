@@ -26,7 +26,7 @@ _tweetscollect_ is a tool for collecting the tweets for a topic from _Twitter_ f
 
 ### 1.2. Implementation
 
-_tweetscollect_ uses the [Twitter's standard search API](https://developer.twitter.com/en/docs/twitter-api/v1/tweets/search/api-reference/get-search-tweets to query against a mixture of the recent and popular tweets for the past 7 days for a given topic. Each tweet in the returned result is then reduced to the mininal, and it includes the date, text, language, favorite count, and retweeted count. Each API call returns limited number of tweets, and multiple paginations are involved in order to collect all the tweets across 7 days. After all the tweets are collected, they are written out to a file in json format.
+_tweetscollect_ uses the [Twitter's standard search API](https://developer.twitter.com/en/docs/twitter-api/v1/tweets/search/api-reference/get-search-tweets) to query against a mixture of the recent and popular tweets for the past 7 days for a given topic. Each tweet in the returned result is then reduced to the mininal, and it includes the date, text, language, favorite count, and retweeted count. Each API call returns limited number of tweets, and multiple paginations are involved in order to collect all the tweets across 7 days. After all the tweets are collected, they are written out to a file in json format.
 
 ### 1.3. Usage
 
@@ -56,7 +56,7 @@ Done.
 
 ### 2.1. Description
 
-_sentimentalyze_ is a tool for performing _sentiment analysis_ over the dataset which _tweetscollect_ has collected. 
+_sentimentalyze_ is a tool for performing _sentiment analysis_ over the dataset with tweets which _tweetscollect_ has collected.
 
 ### 2.2. Implementation
 
