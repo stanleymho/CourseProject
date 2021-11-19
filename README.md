@@ -74,7 +74,7 @@ The json schema of the content in the output file is as follows:
 ```
 ### 1.3. Usage
 
-To run _tweetscollect_, you must have the _bearer token_ from a _Twitter developer account_.
+To run _tweetscollect_, you must have the _bearer token_ from a _Twitter developer account_. Collecting tweets for the past 7-days involves retrieving tens of thousands of tweets from Twitter, and it will takes a few minutes for the tool to run to completion. Please be patient!
 
 Notice that the _Twitter developer account_ has rate limit on the maximum number of requests allowed in a 15-minutes time window, and collecting the tweets for one topic alone might get very close to the limit. Hence, in order to use the tool successfully, please run the tool at most once in a 15-minutes time window.
 
@@ -104,7 +104,7 @@ _sentimentalyze_ is a tool for performing _sentiment analysis_ over the dataset 
 
 ### 2.2. Implementation
 
-_sentimentalyze_ first normalizes all the tweets from the dataset, as there are many retweets and dedupling the tweets could significantly reduce the unique number of tweets for sentiment analysis. Afterwards, _sentimentalyze_ sends the tweets to _Amazon Comprehend_ in batches to determine sentiment in the tweets. After all the tweets have been analyzed, the tweets and their sentiment information are written out to a file in json format.
+_sentimentalyze_ first normalizes all the tweets from the dataset, as there are many retweets and dedupling the tweets could significantly reduce the unique number of tweets for sentiment analysis. Afterwards, _sentimentalyze_ sends the unique tweets to _Amazon Comprehend_ in batches to determine the sentiment. After all the unique tweets have been analyzed, _sentimentalyze_ would reprocess each of the original tweets from the dataset, identify its associated unique tweet and sentiment, and eventually write out the original tweets along with their sentiment to a file in json format.
 
 The json schema of the content in the output file is as follows:
 ```
@@ -156,9 +156,9 @@ The json schema of the content in the output file is as follows:
 ```
 ### 2.3. Usage
 
-To run _sentimentalyze_, you must have the access key ID and secret access key from an _AWS account_.
+To run _sentimentalyze_, you must have the access key ID and secret access key from an _AWS account_. Performing sentiment analysis involves sending all the tweets to _Amazon Comprehend_ in multiple batches to process, and it will takes 15 to 20 minutes for the tool to run to completion. Please be patient!
 
-Please be aware that because _sentimentalyze_ will use _Amazon Comprehend_ from the _AWS account_, and the _AWS account_ will be charged for usage. On average, each run involves between 40,000 to 60,000 tweets, and that's approximately 15,000 to 25,000 unique tweets which costs $1.5 to $2.5 to perform a single run of _sentiment analysis_.
+Please be aware that since _sentimentalyze_ will use _Amazon Comprehend_ from the _AWS account_, the _AWS account_ will be charged for usage. On average, each run involves between 40,000 to 60,000 tweets, and that's approximately 15,000 to 25,000 unique tweets which costs $1.5 to $2.5 to perform a single run of _sentiment analysis_.
 
 ```
 # Build sentimentalyze into an executable.
