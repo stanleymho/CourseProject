@@ -2,7 +2,7 @@
 
 _Sentiment analysis_ can capture the market or customer sentiment towards a brand. Companies can use this information to better understand their audiences’ reactions to the brand’s news or marketing campaigns, and to further enhance the brand. Investors or traders can also leverage this information to determine whether they should long or short their positions in the stock behind the brand.
 
-This project is to perform _sentiment analysis_ on the Twitter tweets related to a given brand over a period of time, and create a sentiment trend graph which visualizes the sentiment towards the brand.
+This project is to perform _sentiment analysis_ on the Twitter tweets related to a given brand over a period of time, and create a sentiment trend graph to visualize the sentiment towards the brand.
 
 # Tools
 
@@ -22,7 +22,7 @@ There are several prerequisites for building and running the tools:
 
 ### 1.1. Description
 
-_tweetscollect_ is a tool for collecting the tweets for a topic from _Twitter_ for the past 7 days into a dataset. The topic could be one or more words. If the word contains special characters, e.g. `$`, the character should be escaped with `\`, i.e. `\$`.
+_tweetscollect_ is a tool for collecting the tweets for a topic from _Twitter_ for the past 7 days into a dataset. The topic could be one or more words. If the word contains special characters, e.g. `$`, the character must be escaped, i.e. `\$`.
 
 ### 1.2. Implementation
 
