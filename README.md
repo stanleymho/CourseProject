@@ -29,7 +29,8 @@ _tweetscollect_ is a tool for collecting the tweets for a topic from _Twitter_ f
 _tweetscollect_ uses the [Twitter's standard search API](https://developer.twitter.com/en/docs/twitter-api/v1/tweets/search/api-reference/get-search-tweets) to query against a mixture of the recent and popular tweets for the past 7 days for a given topic. Each tweet in the returned result is then reduced to the mininal, and it includes the date, text, language, favorite count, and retweeted count. Each API call returns limited number of tweets, and multiple paginations are involved in order to collect all the tweets across 7 days. After all the tweets are collected, they are written out to a file in json format.
 
 The json schema of the content in the output file is as follows:
-```{
+```
+{
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
   "properties": {
@@ -71,7 +72,6 @@ The json schema of the content in the output file is as follows:
   ]
 }
 ```
-
 ### 1.3. Usage
 
 To run _tweetscollect_, you must have the _bearer token_ from a _Twitter developer account_.
@@ -107,7 +107,8 @@ _sentimentalyze_ is a tool for performing _sentiment analysis_ over the dataset 
 _sentimentalyze_ first normalizes all the tweets from the dataset, as there are many retweets and dedupling the tweets could significantly reduce the unique number of tweets for sentiment analysis. Afterwards, _sentimentalyze_ sends the tweets to _Amazon Comprehend_ in batches to determine sentiment in the tweets. After all the tweets have been analyzed, the tweets and their sentiment information are written out to a file in json format.
 
 The json schema of the content in the output file is as follows:
-```{
+```
+{
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
   "properties": {
@@ -153,7 +154,6 @@ The json schema of the content in the output file is as follows:
   ]
 }
 ```
-
 ### 2.3. Usage
 
 To run _sentimentalyze_, you must have the access key ID and secret access key from an _AWS account_.
