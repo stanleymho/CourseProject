@@ -1,35 +1,43 @@
 # CS 410 Final Project - Brand Sentiment on Twitter using Sentiment Analysis (Fall 2021)
 
-## Introduction
+# Introduction
 
 _Sentiment analysis_ can capture the market or customer sentiment towards a brand. Companies can use this information to better understand their audiences’ reactions to the brand’s news or marketing campaigns, and to further enhance the brand. Investors or traders can also leverage this information to determine whether they should long or short their positions in the stock behind the brand.
 
 This project is to perform _sentiment analysis_ on the Twitter tweets related to a given brand over a period of time, and create a sentiment trend graph which visualizes the sentiment towards the brand.
 
-## Tools
+# Tools
+
+## Overview
 
 There are several tools developed for this project:
 1. _tweetscollect_ for collecting the tweets for a topic from _Twitter_ for the past 7 days into a dataset.
 2. _sentimentalyze_ for performing _sentiment analysis_ on the dataset.
 3. TBD for creating a sentiment trend graph based on the analyzed data in the dataset.
 
-### Prerequisites
+## Prerequisites
 
-To build and run the tools, there are several prerequisites:
+There are several prerequisites for building and running the tools:
 1. You will need to install [Go 1.17](https://golang.org/doc/install).
 2. If you don't have a _Twitter developer account_,  [apply one](https://developer.twitter.com/en/apply-for-access). Once you have the account, you will need to create a _Bearer Token_ for authentication. Please see [How to generate from the developer portal](https://developer.twitter.com/en/docs/authentication/oauth-2-0/bearer-tokens).
 3. If you don't have an _AWS account_, [apply one](https://aws.amazon.com). Once you have the account, you will need to [create an access key](https://docs.aws.amazon.com/general/latest/gr/aws-sec-cred-types.html#access-keys-and-secret-access-keys) for programmatic access. The _access key_ consists of an _access key ID_ and a _secret access key_.
 
-### tweetscollect
+## tweetscollect
 
-_tweetscollect_ is a tool for collecting the tweets for a topic from _Twitter_
-for the past 7 days into a dataset. To run the tool, you must have the _bearer
-token_ from your _Twitter developer account_.
+### Description
 
-Notice that the _Twitter developer account_ has rate limit on the maximum number
-of requests allowed in a 15-minutes time window, and collecting the tweets for
-one topic alone might get very close to the limit. Hence, in order to use the
-tool successfully, please run it at most once in a 15-minutes time window.
+_tweetscollect_ is a tool for collecting the tweets for a topic from _Twitter_ for the past 7 days into a dataset. The topic could be one or more words. If the word contains special characters, e.g. `$`, the character should be escaped with `\`, i.e. `\$`.
+
+### Implementation
+
+_tweetscollect_ uses the [Twitter's standard search API](https://developer.twitter.com/en/docs/twitter-api/v1/tweets/search/api-reference/get-search-tweets to query against a mixture of the recent and popular tweets for the past 7 days for a given topic. Each tweet in the returned result is then reduced to the mininal, and it includes the date, text, language, favorite count, and retweeted count. Each API call returns limited number of tweets, and multiple paginations are involved in order to collect all the tweets across 7 days. After all the tweets are collected, they are written out to a file in json format.
+
+### Usage
+
+To run the tool, you must have the _bearer token_ from a _Twitter developer account_.
+
+Notice that the _Twitter developer account_ has rate limit on the maximum number of requests allowed in a 15-minutes time window, and collecting the tweets for one topic alone might get very close to the limit. Hence, in order to use the tool successfully, please run the tool at most once in a 15-minutes time window.
+
 ```
 # Build tweetscollect into an executable.
 #
