@@ -34,7 +34,7 @@ _tweetscollect_ uses the [Twitter's standard search API](https://developer.twitt
 
 ### Usage
 
-To run the tool, you must have the _bearer token_ from a _Twitter developer account_.
+To run _tweetscollect_, you must have the _bearer token_ from a _Twitter developer account_.
 
 Notice that the _Twitter developer account_ has rate limit on the maximum number of requests allowed in a 15-minutes time window, and collecting the tweets for one topic alone might get very close to the limit. Hence, in order to use the tool successfully, please run the tool at most once in a 15-minutes time window.
 
@@ -58,21 +58,25 @@ Done.
 
 ### sentimentalyze
 
-_sentimentalyze_ is a tool for performing _sentiment analysis_ over the dataset
-using _Amazon Comprehend_. To run the tool, you must have the access key ID and
-secret access key from your _AWS account_.
+_sentimentalyze_ is a tool for performing _sentiment analysis_ over the dataset which _tweetscollect_ has collected. 
 
-Please be aware that this tool will use _Amazon Comprehend_ from your _AWS
-account_, and your account will be charged. On average, each run involves
-between 40,000 to 60,000 tweets, and that's approximately 15,000 to 25,000
-unique tweets which costs $1.5 to $2.5 to perform the _sentiment analysis_.
+### Implementation
+
+_sentimentalyze_ first normalizes all the tweets from the dataset, as there are many retweets and dedupling the tweets could significantly reduce the unique number of tweets for sentiment analysis. Afterwards, _sentimentalyze_ sends the tweets to _Amazon Comprehend_ in batches to determine sentiment in the tweets. After all the tweets have been analyzed, the tweets and their sentiment information are written out to a file in json format.
+
+### Usage
+
+To run _sentimentalyze_, you must have the access key ID and secret access key from an _AWS account_.
+
+Please be aware that because _sentimentalyze_ will use _Amazon Comprehend_ from the _AWS account_, and the _AWS account_ will be charged for usage. On average, each run involves between 40,000 to 60,000 tweets, and that's approximately 15,000 to 25,000 unique tweets which costs $1.5 to $2.5 to perform a single run of _sentiment analysis_.
+
 ```
 # Build sentimentalyze into an executable.
 #
 $ go build ./cmd/sentimentalyze/...
 
 # Run sentimentalyze to perform sentiment analysis on the tweets in the
-# input file, by using the access key ID and secret access key from your
+# input file, using the access key ID and secret access key from the
 # AWS account.
 #
 $ ./sentimentalyze -i <input-file> -o <output-file> -a <access-key-id> -s <secret-access-key> [-r <region>]
@@ -81,10 +85,11 @@ Normalizing 40655 tweets into 13089 unique tweets ...
 Performing sentiment analysis on the unique tweets ...
 { "text": "Insight into the big rebrand.. 😎\nvia \n#Facebook #AR #VR #meta #Metaverse #virtualworlds\n\nhttps://t.co/bMQ4hhKlTW", "sentiment": "NEUTRAL" }
 { "text": "Facebook owner Meta has opened up more about the amount of bullying and harassment on its platforms amid pressure to increase transparency\n\n✍️:", "sentiment": "NEUTRAL" }
+...
 Writing tweets with analyzed sentiment to tweets-sentiment.json ...
 Done.
 ```
 
-### TBD
+## TBD
 
 TBD for creating a sentiment trend graph.
