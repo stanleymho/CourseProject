@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"sort"
 	"strings"
 )
 
@@ -25,7 +26,7 @@ func collectTweets(bearerToken, topic, outputFile string) error {
 	searchURLPath := sb.String()
 
 	ctx := context.Background()
-	collectedTweets := make([]TweetV1, 0, 100)
+	collectedTweets := make(Tweets, 0, 100)
 	for {
 		url := fmt.Sprintf("%s%s", twitterSearchURL, searchURLPath)
 		tweets, nextSearchURLPath, err := collectTweetsByURL(ctx, bearerToken, url)
@@ -60,6 +61,9 @@ func collectTweets(bearerToken, topic, outputFile string) error {
 		return err
 	}
 	defer f.Close()
+
+	// Sort the collected tweets to ensure proper ordering.
+	sort.Sort(collectedTweets)
 
 	// Output all tweets to the file.
 	f.WriteString("{\n")
