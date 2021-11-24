@@ -91,7 +91,7 @@ _sentimentalyze_ first normalizes all the tweets from the dataset, as there are 
 
 ### 2.3. Usage
 
-To run _sentimentalyze_, you must have the access key ID and secret access key from an _AWS account_. Performing sentiment analysis involves sending all the tweets to _Amazon Comprehend_ in multiple batches to process, and it will takes 15 to 20 minutes for the tool to run to completion. Please be patient!
+To run _sentimentalyze_, you must have the access key ID and secret access key from an _AWS account_. Performing sentiment analysis involves sending all the tweets to _Amazon Comprehend_ in multiple batches to process, and it will takes a few minutes for the tool to run to completion. Please be patient!
 
 Please be aware that since _sentimentalyze_ will use _Amazon Comprehend_ from the _AWS account_, the _AWS account_ will be charged for usage. On average, each run involves between 40,000 to 60,000 tweets, and that's approximately 15,000 to 25,000 unique tweets which costs $1.5 to $2.5 to perform a single run of _sentiment analysis_.
 
