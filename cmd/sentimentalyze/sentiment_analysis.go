@@ -98,6 +98,7 @@ func analyzeSentiment(ctx context.Context, inputFile, outputFile, region, access
 
 	// Output all tweets to the file.
 	f.WriteString("{\n")
+	f.WriteString(fmt.Sprintf("\t\"query\": \"%s\",\n", data.Query))
 	f.WriteString("\t\"data\": [\n")
 
 	for i, tweet := range data.Tweets {

@@ -17,6 +17,7 @@ const (
 // TweetsData represents the Twitter's dataset.
 type TweetsData struct {
 	Tweets []Tweet `json:"data"`
+	Query  string  `json:"query"`
 }
 
 // Tweet represents a tweet.

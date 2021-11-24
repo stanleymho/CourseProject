@@ -140,7 +140,8 @@ _sentimentgraph_ is a tool for plotting the _Sentiment Trend Graph_ based on the
 
 ### 3.2. Implementation
 
-_sentimentgraph_ simply reads the result of the _sentiment analysis_ from a file, and uses matplotlib.pyplot library to create a _Sentiment Trend Graph_. The sentiment returned from the _sentiment analysis_ for each tweet is either `POSITIVE`, `NEGATIVE`, `NEUTRAL`, or `MIXED`. To plot the graph, we map `POSITIVE` into a sentiment value of 1, `NEGATIVE` into -1, and `NEUTRAL`/`MIXED` into 0 respectively.
+_sentimentgraph_ simply reads the result of the _sentiment analysis_ from a file, and uses matplotlib.pyplot library to create a _Sentiment Trend Graph_. The sentiment returned from the _sentiment analysis_ for each tweet is either `POSITIVE`, `NEGATIVE`, `NEUTRAL`, or `MIXED`. To plot the graph, we create a stacked area graph to show
+how the percentage of positive, negative, and neutral/mixed sentiment have changed over time.
 
 ### 3.3. Usage
 
