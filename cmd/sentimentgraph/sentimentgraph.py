@@ -4,30 +4,8 @@ import matplotlib.pyplot as plt
 import json
 import sys
 from datetime import datetime
-
-def sentiment_value(s):
-    if s == 'POSITIVE':
-        return 1
-    elif s == 'NEGATIVE':
-        return -1
-    elif s == 'NEUTRAL' or s == 'MIXED':
-        return 0
-
-def sentiment_marker(s):
-    if s == 'POSITIVE':
-        return '^'
-    elif s == 'NEGATIVE':
-        return 'v'
-    elif s == 'NEUTRAL' or s == 'MIXED':
-        return '.'
-
-def sentiment_color(s):
-    if s == 'POSITIVE':
-        return 'blue'
-    elif s == 'NEGATIVE':
-        return 'red'
-    elif s == 'NEUTRAL' or s == 'MIXED':
-        return 'green'
+import warnings
+warnings.filterwarnings("ignore")
 
 def main():
     if len(sys.argv) < 2:
@@ -39,59 +17,36 @@ def main():
     dictionary = json.load(open(sys.argv[1], 'r'))
     tweetList = dictionary['data']
 
-    # Compute running average.
-    runningAverageNeutral = 0.0
-    runningAveragePositive = 0.0
-    runningAverageNegative = 0.0
-    for i in reversed(range(len(tweetList))):
-        if i >= 100:
-            break
-        tweet = tweetList[i]
-        s = tweet['sentiment']
-        if s == 'POSITIVE':
-            runningAveragePositive += 1
-        elif s == 'NEGATIVE':
-            runningAverageNegative += 1
-        elif s == 'NEUTRAL' or s == 'MIXED':
-            runningAverageNeutral += 1
-
-    runningAveragePositive /= 100
-    runningAverageNegative /= 100
-    runningAverageNeutral /= 100
-
-    counter = 0
+    totalCount = 0
     positiveCount = 0
     negativeCount = 0
     neutralCount = 0
+    dateTimePoints = []
+    positivePoints = []
+    negativePoints = []
+    neutralPoints = []
     for i in reversed(range(len(tweetList))):
-        counter += 1
-        if counter % 2000 == 1999:
-            print("Loaded {} sentiment data ...".format(counter + 1))
+        totalCount += 1
+        if totalCount % 2000 == 1999:
+            print("Loaded {} sentiment data ...".format(totalCount + 1))
         tweet = tweetList[i]
         # Parse date, e.g. "2021-11-17T09:06:13Z"
         dt = datetime.strptime(tweet['date'], "%Y-%m-%dT%H:%M:%SZ")
         s = tweet['sentiment']
-        if s == "":
-            s = "NEUTRAL"
-
-        value = 0
         if s == "POSITIVE":
             positiveCount += 1
-            value = (positiveCount) * 1.0 / (positiveCount + negativeCount + neutralCount) 
         elif s == "NEGATIVE":
             negativeCount += 1
-            value = (positiveCount + negativeCount) * 1.0 / (positiveCount + negativeCount + neutralCount) 
         else:
             neutralCount +=1
-            value = 1.0 # neutralCount * 1.0 / (positiveCount + negativeCount + neutralCount) 
-        marker = sentiment_marker(s)
-        # plt.plot(dt, sentiment_value(s), marker, color=sentiment_color(s), label="marker='{0}'".format(marker))
-        plt.plot(dt, value, marker, color=sentiment_color(s), label="marker='{0}'".format(marker))
-        # plt.plot(dt, value, color=sentiment_color(s))
+        dateTimePoints.append(dt)
+        positivePoints.append(positiveCount * 1.0 / totalCount)
+        negativePoints.append(negativeCount * 1.0 / totalCount)
+        neutralPoints.append(neutralCount * 1.0 / totalCount)
 
-    print("*** positiveCount: {}".format(positiveCount))
-    print("*** negativeCount: {}".format(negativeCount))
-    print("*** neutralCount: {}".format(neutralCount))
+    # print("*** positiveCount: {}".format(positiveCount))
+    # print("*** negativeCount: {}".format(negativeCount))
+    # print("*** neutralCount: {}".format(neutralCount))
 
     print("Finished loading {} sentiment data!".format(len(tweetList)))
     print("Plotting sentiment trend graph ...")
@@ -102,7 +57,9 @@ def main():
     plt.xticks(rotation='60')
     current_values = plt.gca().get_yticks()
     plt.gca().set_yticklabels(['{:,.0%}'.format(x) for x in current_values])
-    # plt.margins
+    plt.stackplot(dateTimePoints, positivePoints, negativePoints, neutralPoints,
+        labels=['positive','negative','neutral/mixed'])
+    plt.legend(loc='upper right')
     plt.tight_layout()
     plt.show()
 
