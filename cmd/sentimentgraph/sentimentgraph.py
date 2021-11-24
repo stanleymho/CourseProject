@@ -60,6 +60,9 @@ def main():
     runningAverageNeutral /= 100
 
     counter = 0
+    positiveCount = 0
+    negativeCount = 0
+    neutralCount = 0
     for i in reversed(range(len(tweetList))):
         counter += 1
         if counter % 2000 == 1999:
@@ -68,11 +71,20 @@ def main():
         # Parse date, e.g. "2021-11-17T09:06:13Z"
         dt = datetime.strptime(tweet['date'], "%Y-%m-%dT%H:%M:%SZ")
         s = tweet['sentiment']
+        if s == "":
+            s = "NEUTRAL"
+        if s == "POSITIVE":
+            positiveCount += 1
+        elif s == "NEGATIVE":
+            negativeCount += 1
+        else:
+            neutralCount +=1
         marker = sentiment_marker(s)
-        plt.plot(dt, sentiment_value(s), 
-            marker,
-            color=sentiment_color(s),
-            label="marker='{0}'".format(marker))
+        plt.plot(dt, sentiment_value(s), marker, color=sentiment_color(s), label="marker='{0}'".format(marker))
+
+    print("*** positiveCount: {}".format(positiveCount))
+    print("*** negativeCount: {}".format(negativeCount))
+    print("*** neutralCount: {}".format(neutralCount))
 
     print("Finished loading {} sentiment data!".format(len(tweetList)))
     print("Plotting sentiment trend graph ...")

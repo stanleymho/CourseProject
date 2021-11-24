@@ -87,14 +87,6 @@ func analyzeSentiment(ctx context.Context, inputFile, outputFile, region, access
 		}
 	}
 
-	/*
-		for key, sentiment := range tweetSentimentMap {
-			if sentiment == types.SentimentTypePositive || sentiment == types.SentimentTypeNegative {
-				fmt.Printf("*** %s -> %v\n", displayText(key), sentiment)
-			}
-		}
-	*/
-
 	fmt.Printf("Writing tweets with analyzed sentiment to %s ...\n", outputFile)
 
 	// Create output file.
@@ -109,7 +101,10 @@ func analyzeSentiment(ctx context.Context, inputFile, outputFile, region, access
 	f.WriteString("\t\"data\": [\n")
 
 	for i, tweet := range data.Tweets {
-		sentiment := tweetSentimentMap[hashKey(tweet.Text)]
+		sentiment, ok := tweetSentimentMap[hashKey(tweet.Text)]
+		if !ok {
+			sentiment = types.SentimentTypeNeutral
+		}
 		seperator := ","
 		if i == len(data.Tweets)-1 {
 			seperator = ""
