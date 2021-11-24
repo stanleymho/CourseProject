@@ -27,13 +27,21 @@ def main():
     negativePoints = []
     mixedPoints = []
     neutralPoints = []
+    minDateTime = datetime.now()
+    maxDateTime = datetime(1900, 1, 1)
     for i in reversed(range(len(tweetList))):
         totalCount += 1
         if totalCount % 2000 == 0:
             print("Loaded {} sentiment data ...".format(totalCount))
         tweet = tweetList[i]
+
         # Parse date, e.g. "2021-11-17T09:06:13Z"
         dt = datetime.strptime(tweet['date'], "%Y-%m-%dT%H:%M:%SZ")
+        if minDateTime > dt:
+            minDateTime = dt
+        if maxDateTime < dt:
+            maxDateTime = dt
+
         s = tweet['sentiment']
         if s == "POSITIVE":
             positiveCount += 1
@@ -43,6 +51,7 @@ def main():
             mixedCount += 1
         else:
             neutralCount +=1
+
 
         dateTimePoints.append(dt)
         positivePoints.append(positiveCount * 1.0 / totalCount)
@@ -55,6 +64,7 @@ def main():
     plt.grid(True)
     plt.xlabel('Date')
     plt.ylabel('Sentiment')
+    plt.xlim([minDateTime, maxDateTime])
     plt.xticks(rotation='60')
     current_values = plt.gca().get_yticks()
     plt.gca().set_yticklabels(['{:,.0%}'.format(x) for x in current_values])
