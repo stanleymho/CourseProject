@@ -20,10 +20,12 @@ def main():
     totalCount = 0
     positiveCount = 0
     negativeCount = 0
+    mixedCount = 0
     neutralCount = 0
     dateTimePoints = []
     positivePoints = []
     negativePoints = []
+    mixedPoints = []
     neutralPoints = []
     for i in reversed(range(len(tweetList))):
         totalCount += 1
@@ -37,20 +39,16 @@ def main():
             positiveCount += 1
         elif s == "NEGATIVE":
             negativeCount += 1
+        elif s == "MIXED":
+            mixedCount += 1
         else:
             neutralCount +=1
+
         dateTimePoints.append(dt)
         positivePoints.append(positiveCount * 1.0 / totalCount)
         negativePoints.append(negativeCount * 1.0 / totalCount)
+        mixedPoints.append(mixedCount * 1.0 / totalCount)
         neutralPoints.append(neutralCount * 1.0 / totalCount)
-        # print("*** dateTime: {}".format(dt))
-        # print("  --> positiveCount: {}".format(positiveCount))
-        # print("  --> negativeCount: {}".format(negativeCount))
-        # print("  --> neutralCount: {}".format(neutralCount))
-
-    # print("*** positiveCount: {}".format(positiveCount))
-    # print("*** negativeCount: {}".format(negativeCount))
-    # print("*** neutralCount: {}".format(neutralCount))
 
     print("Finished loading {} sentiment data!".format(len(tweetList)))
     print("Plotting sentiment trend graph ...")
@@ -60,8 +58,8 @@ def main():
     plt.xticks(rotation='60')
     current_values = plt.gca().get_yticks()
     plt.gca().set_yticklabels(['{:,.0%}'.format(x) for x in current_values])
-    plt.stackplot(dateTimePoints, positivePoints, negativePoints, neutralPoints,
-        labels=['Positive','Negative','Neutral/Mixed'])
+    plt.stackplot(dateTimePoints, positivePoints, mixedPoints, negativePoints, neutralPoints,
+        labels=['Positive','Mixed', 'Negative', 'Neutral'], colors=['blue', 'orange', 'red', 'grey'])
     plt.legend(loc='upper right')
     plt.tight_layout()
     plt.show()
