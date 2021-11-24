@@ -12,10 +12,10 @@ def main():
         print("Usage:\n  {} <sentiment-file>\n".format(sys.argv[0]))
         sys.exit(1)
 
-    plt.title('Sentiment Trend Graph')
     print("Loading sentiment data from {}, it will take a minute or two ...".format(sys.argv[1]))
     dictionary = json.load(open(sys.argv[1], 'r'))
     tweetList = dictionary['data']
+    plt.title("Sentiment Trend Graph: {}".format(dictionary['query']))
 
     totalCount = 0
     positiveCount = 0
@@ -54,7 +54,6 @@ def main():
 
     print("Finished loading {} sentiment data!".format(len(tweetList)))
     print("Plotting sentiment trend graph ...")
-    plt.style.use('seaborn-whitegrid')
     plt.grid(True)
     plt.xlabel('Date')
     plt.ylabel('Sentiment')
@@ -62,7 +61,7 @@ def main():
     current_values = plt.gca().get_yticks()
     plt.gca().set_yticklabels(['{:,.0%}'.format(x) for x in current_values])
     plt.stackplot(dateTimePoints, positivePoints, negativePoints, neutralPoints,
-        labels=['positive','negative','neutral/mixed'])
+        labels=['Positive','Negative','Neutral/Mixed'])
     plt.legend(loc='upper right')
     plt.tight_layout()
     plt.show()
