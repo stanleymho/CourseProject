@@ -9,7 +9,7 @@ This project is to perform _sentiment analysis_ on the Twitter tweets related to
 There are several tools developed for this project:
 1. _tweetscollect_ for collecting the tweets for a topic from _Twitter_ for the past 7 days into a dataset.
 2. _sentimentalyze_ for performing _sentiment analysis_ on the dataset.
-3. _sentimentgraph_ for plotting the sentiment trend graph based on the results from the _sentiment analysis_.
+3. _sentimentgraph_ for plotting a _Sentiment Trend Graph_ based on the results from the _sentiment analysis_.
 
 ## Prerequisites
 
@@ -27,11 +27,11 @@ _tweetscollect_ is a tool for collecting the tweets for a topic from _Twitter_ f
 
 ### 1.2. Implementation
 
-_tweetscollect_ uses the [Twitter's standard search API](https://developer.twitter.com/en/docs/twitter-api/v1/tweets/search/api-reference/get-search-tweets) to query against a mixture of the recent and popular tweets for the past 7 days for a given topic. Each tweet in the returned result is then reduced to the mininal, and it includes the date, text, language, favorite count, and retweeted count. Each API call returns limited number of tweets, and multiple paginations are involved in order to collect all the tweets across 7 days. After all the tweets are collected, they are written out to a file in json format.
+_tweetscollect_ uses the [Twitter's standard search API](https://developer.twitter.com/en/docs/twitter-api/v1/tweets/search/api-reference/get-search-tweets) to query against a mixture of the recent and popular tweets for the past 7 days for a given topic. Each API call returns a limited number of tweets, and multiple paginations are involved in order to collect all the tweets across 7 days. After all the tweets are collected, the tweets are further reduced to a minimum which includes only the date, text, language, favorite count, and retweeted count. At the end, the resulting tweets are written out to a file in json format.
 
 ### 1.3. Usage
 
-To run _tweetscollect_, you must have the _bearer token_ from a _Twitter developer account_. Collecting tweets for the past 7-days involves retrieving tens of thousands of tweets from Twitter, and it will takes a few minutes for the tool to run to completion. Please be patient!
+To run _tweetscollect_, you must have the _bearer token_ from a _Twitter developer account_. Collecting tweets for the past 7-days involves retrieving tens of thousands of tweets from Twitter, and it will take a few minutes for the tool to run to completion. Please be patient!
 
 Notice that the _Twitter developer account_ has rate limit on the maximum number of requests allowed in a 15-minutes time window, and collecting the tweets for one topic alone might get very close to the limit. Hence, in order to use the tool successfully, please run the tool at most once in a 15-minutes time window.
 
@@ -126,3 +126,49 @@ Done.
 ### 3.1. Description
 
 _sentimentgraph_ is a tool for plotting the _Sentiment Trend Graph_ based on the _sentiment analysis_ which _sentimentalyze_ has performed.
+
+### 3.2. Implementation
+
+_sentimentgraph_ simply reads the result of the _sentiment analysis_ from a file, and uses matplotlib.pyplot library to create a _Sentiment Trend Graph_.
+
+### 3.3. Usage
+
+Notice that running sentimentgraph involves plotting a Sentiment Trend Graph with tens of thousands of data points, and it will take a few minutes to display the visualization. Please be patient!
+
+```
+# Go to sentimentgraph directory.
+#
+$ cd ./cmd/sentimentgraph/
+
+# Show sentimentgraph usage.
+#
+$ ./sentimentgraph.py
+Usage:
+  sentimentgraph.py -i <input-file>
+
+# Run sentimentgraph.py to create the Sentiment Trend Graph.
+#
+$ ./sentimentgraph.py 
+Loading tweets data with sentiment, it will take a minute or two ...
+Loaded 2000 tweets data with sentiment ...
+Loaded 4000 tweets data with sentiment ...
+Loaded 6000 tweets data with sentiment ...
+Loaded 8000 tweets data with sentiment ...
+Loaded 10000 tweets data with sentiment ...
+Loaded 12000 tweets data with sentiment ...
+Loaded 14000 tweets data with sentiment ...
+Loaded 16000 tweets data with sentiment ...
+Loaded 18000 tweets data with sentiment ...
+Loaded 20000 tweets data with sentiment ...
+Loaded 22000 tweets data with sentiment ...
+Loaded 24000 tweets data with sentiment ...
+Loaded 26000 tweets data with sentiment ...
+Loaded 28000 tweets data with sentiment ...
+Loaded 30000 tweets data with sentiment ...
+Loaded 32000 tweets data with sentiment ...
+Loaded 34000 tweets data with sentiment ...
+Loaded 36000 tweets data with sentiment ...
+Finished loading 37742 tweets data with sentiment!
+Plotting sentiment trend graph ...
+```
+
