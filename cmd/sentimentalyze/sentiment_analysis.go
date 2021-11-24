@@ -51,7 +51,7 @@ func analyzeSentiment(ctx context.Context, inputFile, outputFile, region, access
 	comprehendClient := comprehend.NewFromConfig(*cfg)
 
 	counter := 0
-	tweetsLimit := 30
+	tweetsLimit := 50000
 	keyList := make([]string, 0, 25)
 	tweetList := make([]string, 0, 25)
 	for key, _ := range tweetSentimentMap {

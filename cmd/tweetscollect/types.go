@@ -31,6 +31,7 @@ type TweetV1 struct {
 
 func (t *TweetV1) NormalizedText() string {
 	s := t.Text
+	s = strings.ReplaceAll(s, "\\", "\\\\")
 	s = strings.ReplaceAll(s, "\n", "\\n")
 	s = strings.ReplaceAll(s, "\r", "\\r")
 	s = strings.ReplaceAll(s, "\t", "\\t")

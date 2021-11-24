@@ -92,10 +92,6 @@ func collectTweetsByURL(ctx context.Context, bearerToken, url string) ([]TweetV1
 	}
 	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", bearerToken))
 
-	// Use retryable HTTP library with automatic retries and exponential back-off.
-	// retryClient := retryablehttp.NewClient()
-	// retryClient.Logger = nil
-	// client := retryClient.StandardClient()
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
