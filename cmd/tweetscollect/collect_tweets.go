@@ -21,7 +21,7 @@ func collectTweets(bearerToken, topic, outputFile string) error {
 	sb.WriteString("&tweet_mode=extended")
 	sb.WriteString("&include_entities=false")
 	sb.WriteString("&count=100")
-	sb.WriteString("&q=" + url.QueryEscape(topic))
+	sb.WriteString("&q=" + url.PathEscape(topic))
 	searchURLPath := sb.String()
 
 	ctx := context.Background()
