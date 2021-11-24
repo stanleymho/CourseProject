@@ -59,7 +59,8 @@ def main():
     current_values = plt.gca().get_yticks()
     plt.gca().set_yticklabels(['{:,.0%}'.format(x) for x in current_values])
     plt.stackplot(dateTimePoints, positivePoints, mixedPoints, negativePoints, neutralPoints,
-        labels=['Positive','Mixed', 'Negative', 'Neutral'], colors=['blue', 'orange', 'red', 'grey'])
+        labels=['Positive','Mixed', 'Negative', 'Neutral'],
+        colors=['tab:blue', 'gold', 'darkorange', 'grey'])
     plt.legend(loc='upper right')
     plt.tight_layout()
     plt.show()
