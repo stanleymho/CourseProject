@@ -1,2 +1,5 @@
 cmd/tweetscollect/tweetscollect
 cmd/sentimentalyze/sentimentalyze
+cmd/**/*.json
+/tweetscollect
+/sentimentalyze
