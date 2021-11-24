@@ -53,4 +53,5 @@ type UserV1 struct {
 // SearchMetadataV1 represents the metadata of the search.
 type SearchMetadataV1 struct {
 	NextURLPath string `json:"next_results"`
+	Query       string `json:"query"`
 }

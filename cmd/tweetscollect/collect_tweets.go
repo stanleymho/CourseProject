@@ -67,6 +67,7 @@ func collectTweets(bearerToken, topic, outputFile string) error {
 
 	// Output all tweets to the file.
 	f.WriteString("{\n")
+	f.WriteString(fmt.Sprintf("\t\"query\": \"%s\",\n", topic))
 	f.WriteString("\t\"data\": [\n")
 
 	for i, tweet := range collectedTweets {
