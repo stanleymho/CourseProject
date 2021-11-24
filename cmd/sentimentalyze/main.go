@@ -87,7 +87,7 @@ func NewCommand() *cobra.Command {
 	cmd.Flags().StringP(flagInputFile, shortHandInputFile, "tweets.json", "Input file")
 	_ = viper.BindPFlag(vInputFile, cmd.Flags().Lookup(flagInputFile))
 
-	cmd.Flags().StringP(flagOutputFile, shortHandOutputFile, "tweets-sentiment.json", "Output file")
+	cmd.Flags().StringP(flagOutputFile, shortHandOutputFile, "sentiment.json", "Output file")
 	_ = viper.BindPFlag(vOutputFile, cmd.Flags().Lookup(flagOutputFile))
 
 	cmd.Flags().StringP(flagRegion, shortHandRegion, "us-east-1", "Region")
