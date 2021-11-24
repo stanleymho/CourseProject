@@ -4,12 +4,23 @@ _Sentiment analysis_ can capture the market or customer sentiment towards a bran
 
 This project is to perform _sentiment analysis_ on the Twitter tweets related to a given brand over a period of time, and create a sentiment trend graph to visualize the sentiment towards the brand.
 
+Please consult the [documentation](https://github.com/stanleymho/uiuc-cs410-final-project/Final-Project-Documentation.pdf) for more details.
+
 # Tools
 
 There are several tools developed for this project:
 1. _tweetscollect_ for collecting the tweets for a topic from _Twitter_ for the past 7 days into a dataset.
 2. _sentimentalyze_ for performing _sentiment analysis_ on the dataset.
 3. _sentimentgraph_ for plotting a _Sentiment Trend Graph_ based on the results from the _sentiment analysis_.
+
+These tools are designed to work together as follows:
+
+![Workflow](/diagrams/Final-Project-Workflow.png)
+
+1. First, _tweetscollect_ is used to collect the tweets for a given topic from Twitter and write the tweets into a file (i.e. tweets.json).
+2. Next, _sentimentalyze_ takes the tweets returned from _tweetscollect_, and performs _sentiment analysis_ on these tweets using _Amazon Comprehend_ and output the result into another file (i.e. sentiment.json).
+3. Finally, _sentimentgraph_ takes the result from _sentimentalyze_ to create a _Sentiment Trend Graph_ for visualization.
+
 
 ## Prerequisites
 
