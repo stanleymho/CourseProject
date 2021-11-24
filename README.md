@@ -14,7 +14,6 @@ There are several tools developed for this project:
 3. _sentimentgraph_ for plotting a _Sentiment Trend Graph_ based on the results from the _sentiment analysis_.
 
 These tools are designed to work together as follows:
-
 ![Workflow](/diagrams/Final-Project-Workflow.png)
 
 1. First, _tweetscollect_ is used to collect the tweets for a given topic from Twitter and write the tweets into a file (i.e. tweets.json).
