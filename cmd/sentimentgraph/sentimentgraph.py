@@ -27,8 +27,8 @@ def main():
     neutralPoints = []
     for i in reversed(range(len(tweetList))):
         totalCount += 1
-        if totalCount % 2000 == 1999:
-            print("Loaded {} sentiment data ...".format(totalCount + 1))
+        if totalCount % 2000 == 0:
+            print("Loaded {} sentiment data ...".format(totalCount))
         tweet = tweetList[i]
         # Parse date, e.g. "2021-11-17T09:06:13Z"
         dt = datetime.strptime(tweet['date'], "%Y-%m-%dT%H:%M:%SZ")
@@ -43,6 +43,10 @@ def main():
         positivePoints.append(positiveCount * 1.0 / totalCount)
         negativePoints.append(negativeCount * 1.0 / totalCount)
         neutralPoints.append(neutralCount * 1.0 / totalCount)
+        # print("*** dateTime: {}".format(dt))
+        # print("  --> positiveCount: {}".format(positiveCount))
+        # print("  --> negativeCount: {}".format(negativeCount))
+        # print("  --> neutralCount: {}".format(neutralCount))
 
     # print("*** positiveCount: {}".format(positiveCount))
     # print("*** negativeCount: {}".format(negativeCount))
