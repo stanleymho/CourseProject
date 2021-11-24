@@ -35,7 +35,7 @@ def main():
         sys.exit(1)
 
     plt.title('Sentiment Trend Graph')
-    print("Loading sentiment data, it will take a minute or two ...")
+    print("Loading sentiment data from {}, it will take a minute or two ...".format(sys.argv[1]))
     dictionary = json.load(open(sys.argv[1], 'r'))
     tweetList = dictionary['data']
 
