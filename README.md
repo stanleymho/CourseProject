@@ -38,7 +38,7 @@ _tweetscollect_ is a tool for collecting the tweets for a topic from _Twitter_ f
 
 ### 1.2. Implementation
 
-_tweetscollect_ uses the [Twitter's standard search API](https://developer.twitter.com/en/docs/twitter-api/v1/tweets/search/api-reference/get-search-tweets) to query against a mixture of the recent and popular tweets for the past 7 days for a given topic. Each API call returns a limited number of tweets, and multiple paginations are involved in order to collect all the tweets across 7 days. After all the tweets are collected, the tweets are sorted and further reduced to include only the date, text, language, favorite count, and retweeted count. At the end, the resulting tweets are written out to a file in json format.
+_tweetscollect_ uses the [Twitter's standard search API](https://developer.twitter.com/en/docs/twitter-api/v1/tweets/search/api-reference/get-search-tweets) to query against a mixture of the recent and popular tweets for the past 7 days for a given topic. Each API call returns a limited number of tweets, and multiple paginations are involved in order to collect all the tweets across 7 days. After all the tweets are collected, the tweets are sorted and further reduced to include only the date, text, language, favorite count, and retweeted count. At the end, the resulting tweets are written out to a file in json format following a [schema](/schema/tweets-schema.json).
 
 ### 1.3. Usage
 
@@ -87,7 +87,7 @@ _sentimentalyze_ is a tool for performing _sentiment analysis_ over the dataset 
 
 ### 2.2. Implementation
 
-_sentimentalyze_ first normalizes all the tweets from the dataset, as there are many retweets and dedupling the tweets could significantly reduce the unique number of tweets for sentiment analysis. Afterwards, _sentimentalyze_ sends the unique tweets to _Amazon Comprehend_ in batches to determine the sentiment. After all the unique tweets have been analyzed, _sentimentalyze_ would reprocess each of the original tweets from the dataset, identify its associated unique tweet and sentiment, and eventually write out the original tweets along with their sentiment to a file in json format.
+_sentimentalyze_ first normalizes all the tweets from the dataset, as there are many retweets and dedupling the tweets could significantly reduce the unique number of tweets for sentiment analysis. Afterwards, _sentimentalyze_ sends the unique tweets to _Amazon Comprehend_ in batches to determine the sentiment. After all the unique tweets have been analyzed, _sentimentalyze_ would reprocess each of the original tweets from the dataset, identify its associated unique tweet and sentiment, and eventually write out the original tweets along with their sentiment to a file in json format following a [schema](/schema/sentiment-schema.json).
 
 ### 2.3. Usage
 
