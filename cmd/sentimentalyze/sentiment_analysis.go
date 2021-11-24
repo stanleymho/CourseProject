@@ -34,7 +34,7 @@ func analyzeSentiment(ctx context.Context, inputFile, outputFile, region, access
 	originalTweets := make(map[string]string)
 	for _, tweet := range data.Tweets {
 		key := hashKey(tweet.Text)
-		if _, ok := tweetSentimentMap[key]; !ok {
+		if _, ok := tweetSentimentMap[key]; !ok && key != "" {
 			tweetSentimentMap[key] = types.SentimentTypeNeutral
 			originalTweets[key] = tweet.Text
 		}
@@ -55,10 +55,18 @@ func analyzeSentiment(ctx context.Context, inputFile, outputFile, region, access
 	keyList := make([]string, 0, 25)
 	tweetList := make([]string, 0, 25)
 	for key, _ := range tweetSentimentMap {
-		keyList = append(keyList, key)
-		tweetList = append(tweetList, trimTweet(originalTweets[key]))
+		normalizedTweet := trimTweet(originalTweets[key])
 
-		if counter%25 == 24 || counter == len(tweetSentimentMap)-1 || counter == tweetsLimit {
+		// Skip over abnormal tweets.
+		if key == "" || normalizedTweet == "" {
+			counter++
+			continue
+		}
+
+		keyList = append(keyList, key)
+		tweetList = append(tweetList, normalizedTweet)
+
+		if counter%25 == 24 || counter == len(tweetSentimentMap)-1 || counter >= tweetsLimit {
 			textSentimentMap, err := analyzeSentimentInTextList(ctx, comprehendClient, "en", tweetList)
 			if err != nil {
 				return err
@@ -68,8 +76,8 @@ func analyzeSentiment(ctx context.Context, inputFile, outputFile, region, access
 				fmt.Printf("{ \"text\": \"%s\", \"sentiment\": \"%v\" }\n", displayText(text), sentiment)
 				tweetSentimentMap[hashKey(text)] = sentiment
 			}
-			keyList = nil
-			tweetList = nil
+			keyList = make([]string, 0, 25)
+			tweetList = make([]string, 0, 25)
 		}
 		counter++
 
