@@ -35,7 +35,7 @@ def main():
         sys.exit(1)
 
     plt.title('Sentiment Trend Graph')
-    print("Loading tweets data with sentiment, it will take a minute or two ...")
+    print("Loading sentiment data, it will take a minute or two ...")
     dictionary = json.load(open(sys.argv[1], 'r'))
     tweetList = dictionary['data']
 
@@ -63,22 +63,26 @@ def main():
     for i in reversed(range(len(tweetList))):
         counter += 1
         if counter % 2000 == 1999:
-            print("Loaded {} tweets data with sentiment ...".format(counter + 1))
+            print("Loaded {} sentiment data ...".format(counter + 1))
         tweet = tweetList[i]
         # Parse date, e.g. "2021-11-17T09:06:13Z"
         dt = datetime.strptime(tweet['date'], "%Y-%m-%dT%H:%M:%SZ")
         s = tweet['sentiment']
+        marker = sentiment_marker(s)
         plt.plot(dt, sentiment_value(s), 
-            sentiment_marker(s),
-            color=sentiment_color(s))
+            marker,
+            color=sentiment_color(s),
+            label="marker='{0}'".format(marker))
 
-    print("Finished loading {} tweets data with sentiment!".format(len(tweetList)))
+    print("Finished loading {} sentiment data!".format(len(tweetList)))
     print("Plotting sentiment trend graph ...")
     plt.style.use('seaborn-whitegrid')
+    plt.grid(True)
     plt.xlabel('Date')
     plt.ylabel('Sentiment')
     plt.xticks(rotation='60')
     # plt.margins
+    plt.tight_layout()
     plt.show()
 
 if __name__ == '__main__':
