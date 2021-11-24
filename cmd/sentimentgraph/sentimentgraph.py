@@ -2,6 +2,7 @@
 #
 import matplotlib.pyplot as plt
 import json
+import sys
 from datetime import datetime
 
 def sentiment_value(s):
@@ -29,9 +30,13 @@ def sentiment_color(s):
         return 'green'
 
 def main():
+    if len(sys.argv) < 2:
+        print("Usage:\n  {} <sentiment-file>\n".format(sys.argv[0]))
+        sys.exit(1)
+
     plt.title('Sentiment Trend Graph')
     print("Loading tweets data with sentiment, it will take a minute or two ...")
-    dictionary = json.load(open('../cmd/sentimentalyze/tweets-sentiment.json', 'r'))
+    dictionary = json.load(open(sys.argv[1], 'r'))
     tweetList = dictionary['data']
 
     # Compute running average.

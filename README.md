@@ -144,7 +144,7 @@ $ cd ./cmd/sentimentgraph/
 #
 $ ./sentimentgraph.py
 Usage:
-  sentimentgraph.py -i <input-file>
+  sentimentgraph.py <sentiment-file>
 
 # Run sentimentgraph.py to create the Sentiment Trend Graph.
 #
