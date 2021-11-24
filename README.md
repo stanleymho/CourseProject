@@ -22,7 +22,7 @@ There are several prerequisites for building and running the tools:
 
 ### 1.1. Description
 
-_tweetscollect_ is a tool for collecting the tweets for a topic from _Twitter_ for the past 7 days into a dataset. The topic could be one or more words. If the word contains special characters, e.g. `$`, the character must be escaped, i.e. `\$`.
+_tweetscollect_ is a tool for collecting the tweets for a topic from _Twitter_ for the past 7 days into a dataset. The topic consists of one or more words. If a word contains special characters, e.g. `$`, the character must be escaped, i.e. `\$`.
 
 ### 1.2. Implementation
 
@@ -86,13 +86,15 @@ $ go build ./cmd/tweetscollect/...
 # Run tweetscollect to collect tweets for a topic, by using the bearer token
 # from your Twitter developer account, and write the collected tweets to file.
 #
-$ ./tweetscollect -b "<bearer-token>" -t "<topic>" -o <output-file>
-Collecting tweets from Twitter on topic "<topic>" ...
+# $ tweetscollect -b "<bearer-token>" -t "<topic>" -o <output-file>
+#
+$ ./tweetscollect -b "..." -t "Facebook Meta" -o tweets.json
+Collecting tweets from Twitter on topic "Facebook Meta" ...
 
 { "date": "2021-11-16T00:46:05Z", "text": "JUST IN: Ohio Attorney General sues Facebook (Meta) for securities fraud.", "lang": "en", "favorite": 1077, "retweet": 328 }
 ...
 
-Writing collected tweets to <output-file> ...
+Writing collected tweets to tweets.json ...
 Done.
 ```
 
@@ -169,8 +171,10 @@ $ go build ./cmd/sentimentalyze/...
 # input file, using the access key ID and secret access key from the
 # AWS account.
 #
-$ ./sentimentalyze -i <input-file> -o <output-file> -a <access-key-id> -s <secret-access-key> [-r <region>]
-Reading 40655 tweets from ../tweetscollect/tweets.json ...
+# $ sentimentalyze -i <input-file> -o <output-file> -a "<access-key-id>" -s "<secret-access-key>" [-r <region>]
+#
+$ ./sentimentalyze -i tweets.json -o tweets-sentiment.json -a "..." -s "..." -r "us-east-1"
+Reading 40655 tweets from tweets.json ...
 Normalizing 40655 tweets into 13089 unique tweets ...
 Performing sentiment analysis on the unique tweets ...
 { "text": "Insight into the big rebrand.. 😎\nvia \n#Facebook #AR #VR #meta #Metaverse #virtualworlds\n\nhttps://t.co/bMQ4hhKlTW", "sentiment": "NEUTRAL" }
