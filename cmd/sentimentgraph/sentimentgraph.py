@@ -66,6 +66,7 @@ def main():
     plt.ylabel('Sentiment')
     plt.xlim([minDateTime, maxDateTime])
     plt.xticks(rotation='60')
+    plt.ylim([0.0, 1.0])
     current_values = plt.gca().get_yticks()
     plt.gca().set_yticklabels(['{:,.0%}'.format(x) for x in current_values])
     plt.stackplot(dateTimePoints, positivePoints, mixedPoints, negativePoints, neutralPoints,
