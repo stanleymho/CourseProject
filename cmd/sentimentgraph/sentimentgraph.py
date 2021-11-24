@@ -73,14 +73,21 @@ def main():
         s = tweet['sentiment']
         if s == "":
             s = "NEUTRAL"
+
+        value = 0
         if s == "POSITIVE":
             positiveCount += 1
+            value = (positiveCount) * 1.0 / (positiveCount + negativeCount + neutralCount) 
         elif s == "NEGATIVE":
             negativeCount += 1
+            value = (positiveCount + negativeCount) * 1.0 / (positiveCount + negativeCount + neutralCount) 
         else:
             neutralCount +=1
+            value = 1.0 # neutralCount * 1.0 / (positiveCount + negativeCount + neutralCount) 
         marker = sentiment_marker(s)
-        plt.plot(dt, sentiment_value(s), marker, color=sentiment_color(s), label="marker='{0}'".format(marker))
+        # plt.plot(dt, sentiment_value(s), marker, color=sentiment_color(s), label="marker='{0}'".format(marker))
+        plt.plot(dt, value, marker, color=sentiment_color(s), label="marker='{0}'".format(marker))
+        # plt.plot(dt, value, color=sentiment_color(s))
 
     print("*** positiveCount: {}".format(positiveCount))
     print("*** negativeCount: {}".format(negativeCount))
@@ -93,6 +100,8 @@ def main():
     plt.xlabel('Date')
     plt.ylabel('Sentiment')
     plt.xticks(rotation='60')
+    current_values = plt.gca().get_yticks()
+    plt.gca().set_yticklabels(['{:,.0%}'.format(x) for x in current_values])
     # plt.margins
     plt.tight_layout()
     plt.show()
