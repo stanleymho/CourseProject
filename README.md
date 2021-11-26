@@ -4,7 +4,9 @@ _Sentiment analysis_ can capture the market or customer sentiment towards a bran
 
 This project is to perform _sentiment analysis_ on the Twitter tweets related to a given brand over a period of time, and create a sentiment trend graph to visualize the sentiment towards the brand.
 
-**Please consult the [Documentation and Final Report](/Final-Project-Documentation.pdf) for more details.**
+**For more details, please consult the [Software Usage Tutorial Presentation](https://drive.google.com/file/d/1uAjvmu3oai6wEMxDIIw5moyfi71hFeWb/view?usp=sharing) and [Final Project Documentation and Report](/Final-Project-Documentation.pdf).**
+
+# Software Usage Tutorial
 
 # Tools
 
