@@ -9,7 +9,7 @@ This project is to perform _sentiment analysis_ on the Twitter tweets related to
 # Tools
 
 There are several tools developed for this project:
-1. _tweetscollect_ for collecting the tweets for a topic from _Twitter_ for the past 7 days into a dataset.
+1. _tweetscollect_ for collecting the tweets for a topic from _Twitter_ into a dataset.
 2. _sentimentalyze_ for performing _sentiment analysis_ on the dataset.
 3. _sentimentgraph_ for plotting a _Sentiment Trend Graph_ based on the results from the _sentiment analysis_.
 
@@ -143,7 +143,7 @@ _sentimentgraph_ simply reads the result of the _sentiment analysis_ from a file
 
 ### 3.3. Usage
 
-Notice that running sentimentgraph involves plotting a Sentiment Trend Graph with tens of thousands of data points, and it will take a few minutes to display the visualization. Please be patient!
+Notice that running _sentimentgraph_ involves plotting a _Sentiment Trend Graph_ with tens of thousands of data points, and it will take a minute or two to display the visualization. Please be patient!
 
 ```
 # Go to sentimentgraph directory.
